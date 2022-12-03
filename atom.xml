@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Reborn</title>
+  
+  <subtitle>Reborn</subtitle>
+  <link href="http://example.com/atom.xml" rel="self"/>
+  
+  <link href="http://example.com/"/>
+  <updated>2022-12-03T16:38:36.403Z</updated>
+  <id>http://example.com/</id>
+  
+  <author>
+    <name>Reborn</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>谈谈内存</title>
+    <link href="http://example.com/2022/05/27/memoryee/"/>
+    <id>http://example.com/2022/05/27/memoryee/</id>
+    <published>2022-05-27T10:00:00.000Z</published>
+    <updated>2022-12-03T16:38:36.403Z</updated>
+    
+    <content type="html"><![CDATA[<p>鸽了</p>]]></content>
+    
+    
+    <summary type="html">一次社课</summary>
+    
+    
+    
+    <category term="技术" scheme="http://example.com/categories/%E6%8A%80%E6%9C%AF/"/>
+    
+    
+    <category term="技术" scheme="http://example.com/tags/%E6%8A%80%E6%9C%AF/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>如何优雅地过一个浪漫的琴人节</title>
+    <link href="http://example.com/2022/02/14/Valentine2022/"/>
+    <id>http://example.com/2022/02/14/Valentine2022/</id>
+    <published>2022-02-14T10:00:00.000Z</published>
+    <updated>2022-12-03T16:38:45.081Z</updated>
+    
+    <content type="html"><![CDATA[<p>鸽了</p>]]></content>
+    
+    
+    <summary type="html">亚麻色头发的少女是啥样的...?</summary>
+    
+    
+    
+    <category term="休闲" scheme="http://example.com/categories/%E4%BC%91%E9%97%B2/"/>
+    
+    
+    <category term="音乐" scheme="http://example.com/tags/%E9%9F%B3%E4%B9%90/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>躺在云上</title>
+    <link href="http://example.com/2022/02/01/hello-world/"/>
+    <id>http://example.com/2022/02/01/hello-world/</id>
+    <published>2022-01-31T16:00:00.000Z</published>
+    <updated>2022-10-27T11:41:53.672Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>]]></content>
+    
+    
+    <summary type="html">影子铺满了大地</summary>
+    
+    
+    
+    <category term="建站" scheme="http://example.com/categories/%E5%BB%BA%E7%AB%99/"/>
+    
+    
+    <category term="建站" scheme="http://example.com/tags/%E5%BB%BA%E7%AB%99/"/>
+    
+  </entry>
+  
+</feed>
