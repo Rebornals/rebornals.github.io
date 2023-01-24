@@ -2,12 +2,12 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title>Reborn</title>
   
-  <subtitle>Reborn</subtitle>
-  <link href="http://example.com/atom.xml" rel="self"/>
+  <subtitle>花径不曾缘客扫。蓬门今始为君开。</subtitle>
+  <link href="https://lazyreborn.xyz/atom.xml" rel="self"/>
   
-  <link href="http://example.com/"/>
+  <link href="https://lazyreborn.xyz/"/>
   <updated>2023-01-23T12:48:03.593Z</updated>
-  <id>http://example.com/</id>
+  <id>https://lazyreborn.xyz/</id>
   
   <author>
     <name>Reborn</name>
@@ -18,8 +18,8 @@
   
   <entry>
     <title>La fille aux cheveux de lin</title>
-    <link href="http://example.com/2022/02/14/Valentine2022/"/>
-    <id>http://example.com/2022/02/14/Valentine2022/</id>
+    <link href="https://lazyreborn.xyz/2022/02/14/Valentine2022/"/>
+    <id>https://lazyreborn.xyz/2022/02/14/Valentine2022/</id>
     <published>2022-02-14T10:00:00.000Z</published>
     <updated>2023-01-23T12:48:03.593Z</updated>
     
@@ -30,31 +30,31 @@
     
     
     
-    <category term="休闲" scheme="http://example.com/categories/%E4%BC%91%E9%97%B2/"/>
+    <category term="休闲" scheme="https://lazyreborn.xyz/categories/%E4%BC%91%E9%97%B2/"/>
     
     
-    <category term="音乐" scheme="http://example.com/tags/%E9%9F%B3%E4%B9%90/"/>
+    <category term="音乐" scheme="https://lazyreborn.xyz/tags/%E9%9F%B3%E4%B9%90/"/>
     
   </entry>
   
   <entry>
     <title>躺在云上</title>
-    <link href="http://example.com/2022/02/01/hello-world/"/>
-    <id>http://example.com/2022/02/01/hello-world/</id>
+    <link href="https://lazyreborn.xyz/2022/02/01/hello-world/"/>
+    <id>https://lazyreborn.xyz/2022/02/01/hello-world/</id>
     <published>2022-01-31T16:00:00.000Z</published>
-    <updated>2023-01-23T12:56:25.374Z</updated>
+    <updated>2023-01-23T13:25:51.107Z</updated>
     
-    <content type="html"><![CDATA[<p>hello world<br>先前采用的方案是 vps+apache+四处缝合的代码<br>现在采用 hexo butterfly+github pages（穷~）</p><!-- ## Quick Start### Create a new post<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a> –&gt;</p>]]></content>
+    <content type="html"><![CDATA[<p>hello world<br>先前采用的方案是 vps+apache+四处缝合的代码<br>现在采用 hexo butterfly+github pages（穷~）</p>]]></content>
     
     
     <summary type="html">影子铺满了大地</summary>
     
     
     
-    <category term="建站" scheme="http://example.com/categories/%E5%BB%BA%E7%AB%99/"/>
+    <category term="建站" scheme="https://lazyreborn.xyz/categories/%E5%BB%BA%E7%AB%99/"/>
     
     
-    <category term="建站" scheme="http://example.com/tags/%E5%BB%BA%E7%AB%99/"/>
+    <category term="建站" scheme="https://lazyreborn.xyz/tags/%E5%BB%BA%E7%AB%99/"/>
     
   </entry>
   
