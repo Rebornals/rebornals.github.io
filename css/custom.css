@@ -17,7 +17,7 @@
     src: url('../ttf/FZQianLXSJW.TTF') format("truetype");
   }
 
-  body {
+  * {
     font-family: 'FZQianLXSJW';
   }
   div#menus {
