@@ -17,9 +17,6 @@
     src: url('../ttf/FZQianLXSJW.TTF') format("truetype");
   }
 
-  * {
-    font-family: 'FZQianLXSJW';
-  }
   div#menus {
     font-family: 'FZQianLXSJW';
   }
