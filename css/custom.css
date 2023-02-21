@@ -12,23 +12,26 @@
     font-weight: lighter;
   } */
   @font-face{
-    font-family: 'FZQianLXSJW';
+    font-family: FZQianLXSJW;
     font-display: swap;
     src: url('../ttf/FZQianLXSJW.TTF') format("truetype");
   }
 
+  body {
+    font-family: FZQianLXSJW;
+  }
   div#menus {
-    font-family: 'FZQianLXSJW';
+    font-family: FZQianLXSJW;
   }
   h1#site-title {
-    font-family: 'FZQianLXSJW';
+    font-family: FZQianLXSJW;
     font-size: 3em !important;
   }
   a.article-title,
   a.blog-slider__title,
   a.categoryBar-list-link,
   h1.post-title {
-    font-family: 'FZQianLXSJW';
+    font-family: FZQianLXSJW;
   }
   
   .iconfont {
