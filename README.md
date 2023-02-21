@@ -1,2 +1,0 @@
-# lazyreborn.xyz
-My blog
