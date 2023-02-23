@@ -180,7 +180,7 @@
   
   /* 头图透明 */
   #page-header {
-    background: transparent !important;
+    /* background: transparent !important; */
   }
   
   #rightside > div > button {
