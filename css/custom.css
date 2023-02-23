@@ -424,7 +424,7 @@ background: rgba(255, 255, 255, 0.8);
 }
 /* 头图透明 */
 #page-header{
-  background: transparent!important;
+  /* background: transparent!important; */
 }
 /*白天模式伪类遮罩层透明*/
 [data-theme="light"]
