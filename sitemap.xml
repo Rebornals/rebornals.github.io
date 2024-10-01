@@ -11,15 +11,6 @@
   </url>
   
   <url>
-    <loc>https://lazyreborn.site/2022/02/14/Valentine2022/</loc>
-    
-    <lastmod>2023-01-23</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://lazyreborn.site/link/index.html</loc>
     
     <lastmod>2022-12-04</lastmod>
@@ -67,22 +58,15 @@
 
   <url>
     <loc>https://lazyreborn.site/</loc>
-    <lastmod>2023-02-23</lastmod>
+    <lastmod>2024-10-01</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
 
   
   <url>
-    <loc>https://lazyreborn.site/tags/%E9%9F%B3%E4%B9%90/</loc>
-    <lastmod>2023-02-23</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://lazyreborn.site/tags/%E5%BB%BA%E7%AB%99/</loc>
-    <lastmod>2023-02-23</lastmod>
+    <lastmod>2024-10-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
@@ -90,15 +74,8 @@
 
   
   <url>
-    <loc>https://lazyreborn.site/categories/%E4%BC%91%E9%97%B2/</loc>
-    <lastmod>2023-02-23</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://lazyreborn.site/categories/%E5%BB%BA%E7%AB%99/</loc>
-    <lastmod>2023-02-23</lastmod>
+    <lastmod>2024-10-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
