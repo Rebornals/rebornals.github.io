@@ -215,21 +215,21 @@
     display: none !important;
   } */
   
-  /* .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body {
+  .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body {
     left: -66px !important;
-    transition: all 0.3s; */
+    transition: all 0.3s;
     /* 默认情况下缩进左侧66px，只留一点箭头部分 */
-  /* } */
+  }
   
-  /* .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body:hover {
+  .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body:hover {
     left: 0 !important;
-    transition: all 0.3s; */
+    transition: all 0.3s;
     /* 鼠标悬停是左侧缩进归零，完全显示按钮 */
-  /* } */
+  }
   
-  /* .aplayer.aplayer-fixed {
+  .aplayer.aplayer-fixed {
     z-index: 999999 !important;
-  } */
+  }
   
   /* 评论框  */
   .vwrap {
