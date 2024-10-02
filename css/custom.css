@@ -11,7 +11,7 @@
     font-display: swap;
     font-weight: lighter;
   } */
-  /* @font-face{
+  @font-face{
     font-family: FZQianLXSJW;
     font-display: swap;
     src: url('../ttf/FZQianLXSJW.TTF') format("truetype");
@@ -32,7 +32,7 @@
   a.categoryBar-list-link,
   h1.post-title {
     font-family: FZQianLXSJW;
-  } */
+  }
   
   .iconfont {
     font-family: "iconfont" !important;
