@@ -6,7 +6,7 @@
   <link href="https://lazyreborn.site/atom.xml" rel="self"/>
   
   <link href="https://lazyreborn.site/"/>
-  <updated>2024-10-02T06:12:20.077Z</updated>
+  <updated>2026-01-23T14:07:54.175Z</updated>
   <id>https://lazyreborn.site/</id>
   
   <author>
@@ -15,6 +15,27 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>混合精度的数字电路设计</title>
+    <link href="https://lazyreborn.site/2026/01/23/%E6%B7%B7%E5%90%88%E7%B2%BE%E5%BA%A6%E7%9A%84%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF%E8%AE%BE%E8%AE%A1/"/>
+    <id>https://lazyreborn.site/2026/01/23/%E6%B7%B7%E5%90%88%E7%B2%BE%E5%BA%A6%E7%9A%84%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF%E8%AE%BE%E8%AE%A1/</id>
+    <published>2026-01-23T13:58:16.000Z</published>
+    <updated>2026-01-23T14:07:54.175Z</updated>
+    
+    <content type="html"><![CDATA[<p>敬请期待</p>]]></content>
+    
+    
+    <summary type="html">最近在看的</summary>
+    
+    
+    
+    <category term="数字电路" scheme="https://lazyreborn.site/categories/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/"/>
+    
+    
+    <category term="数字电路" scheme="https://lazyreborn.site/tags/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/"/>
+    
+  </entry>
   
   <entry>
     <title>躺在云上</title>
