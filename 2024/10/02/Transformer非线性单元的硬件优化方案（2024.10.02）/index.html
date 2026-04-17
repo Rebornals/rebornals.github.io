@@ -1,0 +1,311 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Transformer非线性单元的硬件优化方案 | Reborn</title><meta name="author" content="Reborn"><meta name="copyright" content="Reborn"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="整理了近年来关于Transformer中非线性单元（SoftMax、GELU、LayerNorm等）的硬件优化方案">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Transformer非线性单元的硬件优化方案">
+<meta property="og:url" content="https://lazyreborn.site/2024/10/02/Transformer%E9%9D%9E%E7%BA%BF%E6%80%A7%E5%8D%95%E5%85%83%E7%9A%84%E7%A1%AC%E4%BB%B6%E4%BC%98%E5%8C%96%E6%96%B9%E6%A1%88%EF%BC%882024.10.02%EF%BC%89/index.html">
+<meta property="og:site_name" content="Reborn">
+<meta property="og:description" content="整理了近年来关于Transformer中非线性单元（SoftMax、GELU、LayerNorm等）的硬件优化方案">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260417152216_144_15.jpg">
+<meta property="article:published_time" content="2024-10-02T14:30:00.000Z">
+<meta property="article:modified_time" content="2026-04-17T07:32:26.279Z">
+<meta property="article:author" content="Reborn">
+<meta property="article:tag" content="Transformer">
+<meta property="article:tag" content="非线性单元">
+<meta property="article:tag" content="硬件加速">
+<meta property="article:tag" content="论文笔记">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260417152216_144_15.jpg"><link rel="shortcut icon" href="https://s2.loli.net/2024/10/02/tKw8pe7z9TLGkAR.webp"><link rel="canonical" href="https://lazyreborn.site/2024/10/02/Transformer%E9%9D%9E%E7%BA%BF%E6%80%A7%E5%8D%95%E5%85%83%E7%9A%84%E7%A1%AC%E4%BB%B6%E4%BC%98%E5%8C%96%E6%96%B9%E6%A1%88%EF%BC%882024.10.02%EF%BC%89/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://npm.elemecdn.com/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":true,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
+  source: {
+    justifiedGallery: {
+      js: 'https://npm.elemecdn.com/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://npm.elemecdn.com/flickr-justified-gallery/dist/fjGallery.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Transformer非线性单元的硬件优化方案',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2026-04-17 15:32:26'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const now = new Date()
+          const hour = now.getHours()
+          const isNight = hour <= 6 || hour >= 18
+          if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+          else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><script src="https://npm.elemecdn.com/akilar-candyassets/image/js/SAO-Notify.js" async></script><link rel="stylesheet" type="text/css" href="https://npm.elemecdn.com/js-heo@1.0.11/mainColor/heoMainColor.css"><link rel="stylesheet" type="text/css" href="https://npm.elemecdn.com/js-heo@1.0.11/poem/poem.css"><link rel="stylesheet" href="/css/custom.css" media="defer" onload="this.media='all'"><!-- hexo injector head_end start --><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiperstyle.css" media="print" onload="this.media='all'"><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="Reborn" type="application/atom+xml">
+</head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>const preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")   
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+  }
+}
+window.addEventListener('load',()=> { preloader.endLoading() })
+if (false) {
+  document.addEventListener('pjax:send', () => { preloader.initLoading() })
+  document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+}</script><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://s2.loli.net/2024/10/02/tKw8pe7z9TLGkAR.webp" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">5</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">9</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/bangumis/index.html"><i class="fa-fw fas fa-home"></i><span> 追番</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260417152216_144_15.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Reborn</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/bangumis/index.html"><i class="fa-fw fas fa-home"></i><span> 追番</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Transformer非线性单元的硬件优化方案</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-10-02T14:30:00.000Z" title="发表于 2024-10-02 22:30:00">2024-10-02</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-04-17T07:32:26.279Z" title="更新于 2026-04-17 15:32:26">2026-04-17</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">论文笔记</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Transformer非线性单元的硬件优化方案"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="Quest-Query-Aware-Sparsity-for-Efficient-Long-Context-LLM-Inference"><a href="#Quest-Query-Aware-Sparsity-for-Efficient-Long-Context-LLM-Inference" class="headerlink" title="Quest: Query-Aware Sparsity for Efficient Long-Context LLM Inference"></a>Quest: Query-Aware Sparsity for Efficient Long-Context LLM Inference</h2><p>有关Quest和H2O的对比：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/H2O_compare_Quest.png" alt="贪心的不足"></p>
+<h3 id="主要区别"><a href="#主要区别" class="headerlink" title="主要区别"></a>主要区别</h3><p>H2O采取的是贪心算法，每次剔除掉的token是永久性的，也就是下次不会再有被删除的token，就会影响模型性能。而Quest提出一种非永久剔除Token的动态构建Token候选集算法：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/quest_calculate_process.png" alt="Quest计算过程"></p>
+<p>Quest保留所有之前的Token，每轮都会计算当前的Token和过去所有Token的相关性，然后用TopK的算法选取相关性最高的K个Token参与Attention计算。这样计算会导致计算负载又增加，因此具体而言，Quest是选Page（Quest用Page Attention技术对KVCache进行管理）而非Token。</p>
+<p>之后论文介绍了如何计算一个Page的相关性得分：Quest在常规的KVCache页表基础上，新增了一个MetaKVCache页表，用于存储每个KVCache页最大和最小的Key向量。Query向量分别和最大最小Key向量进行Elementwise乘法，得到两个向量结果。对两个向量结果进行Elementwise Max，得到一个向量结果，再求和，得到该Page的得分；根据得分选择Top K个Page作为Token候选集。</p>
+<p>经过计算后，保存这次的mask：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 克隆注意力掩码，并增加两个维度以匹配后续操作的期望形状</span></span><br><span class="line">self.attention_masks_next = attn_mask.clone().unsqueeze(<span class="number">0</span>).unsqueeze(<span class="number">2</span>)</span><br></pre></td></tr></table></figure>
+
+<p>然后下次计算带回之前的mask：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 如果存在下一个注意力掩码，则更新注意力权重</span></span><br><span class="line"><span class="keyword">if</span> self.attention_masks_next <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">    <span class="comment"># 使用下一个注意力掩码对当前权重进行掩码操作</span></span><br><span class="line">    attn_weights = attn_weights * self.attention_masks_next + (<span class="number">1</span> - self.attention_masks_next) * torch.finfo(attn_weights.dtype).<span class="built_in">min</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="Hardware-Efficient-SoftMax-Architecture-With-Bit-Wise-Exponentiation-and-Reciprocal-Calculation"><a href="#Hardware-Efficient-SoftMax-Architecture-With-Bit-Wise-Exponentiation-and-Reciprocal-Calculation" class="headerlink" title="Hardware-Efficient SoftMax Architecture With Bit-Wise Exponentiation and Reciprocal Calculation"></a>Hardware-Efficient SoftMax Architecture With Bit-Wise Exponentiation and Reciprocal Calculation</h2><p>这篇论文介绍的是SoftMax计算的整体架构优化。对于指数运算，保持以e为底，并以流水线的方式执行位运算。对于除法，通过计算总指数和的倒数值来使用除法通过乘法的方法。然后将倒数值乘以单个指数值以获得最终的SoftMax值。为了确保数值稳定性，选择减去$\widehat{x_{\max }}$，它比$x_{max}$在表示上更为简单。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/single_softmax_arch_overall.png" alt="softmax整体结构"></p>
+<h3 id="预处理单元"><a href="#预处理单元" class="headerlink" title="预处理单元"></a>预处理单元</h3><p>为了实现数值稳定性，所提出的方法采用了一种方法，即从每个输入值中减去 $\hat{x_{max}}$ 的估计值。如果 $x_{max}$ 是正数，那么$\hat{x_{max}}$的估计值取$x_{max}$的整数部分，即截断小数部分。如果$x_{max}$是负数，那么$\hat{x_{max}}$的估计值设为0。</p>
+<h3 id="指数单元"><a href="#指数单元" class="headerlink" title="指数单元"></a>指数单元</h3><p>指数单元变换成如下形式，增加一些常数减少计算量，$I$和$F$对应$w \cdot \log _2 e$的整数部分和小数部分，一部分转为2的移位操作，另一部分通过查找表简化计算。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/tcas_softmax_exponential_unit.png" alt="倒数单元"></p>
+<p>$$e^w&#x3D;e^{w \cdot \log _2 e \cdot \ln 2}&#x3D;e^{(I+F) \cdot \ln 2}&#x3D;2^I \cdot e^{F \cdot \ln 2}$$</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/tcas_softmax_exponential_unit_detail.png" alt="exponent calculation module"></p>
+<p>$e^{F \cdot \ln 2}$的计算则是依靠查找表进行，将其分解为多个$e^{w} &#x3D; 1 + 2^{i}$相乘，具体到硬件则是计算好每个$i$再根据设定的计算模式计算：</p>
+<p>$$<br>e^w&#x3D;e^{\sum_{i&#x3D;0}^n w_i}&#x3D;e^{w_0} e^{w_1} \cdots e^{w_n}&#x3D;\prod_{i&#x3D;0}^n b_i<br>$$</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/tcas_softmax_exponential_unit_LUT.png" alt="查找表"></p>
+<h3 id="倒数单元"><a href="#倒数单元" class="headerlink" title="倒数单元"></a>倒数单元</h3><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/tcas_softmax_reciprocal_unit.png" alt="倒数单元"></p>
+<p>计算倒数值主要有两种方法：收敛法和被称为牛顿-拉夫森法的倒数法，本文使用收敛法：</p>
+<p>$$<br>\begin{aligned}<br>\frac{1}{Q} &amp; &#x3D;\frac{R_0 R_1 \cdots R_{n-1}}{Q \cdot R_0 \cdot R_1 \cdots R_{n-1}}&#x3D;\frac{\prod_{i&#x3D;0}^{n-1} R_i}{D_n} \cong \prod_{i&#x3D;0}^{n-1} R_i \<br>D_n &amp; &#x3D; \begin{cases}Q &amp; (n&#x3D;0) \<br>D_{n-1} \cdot R_{n-1} &amp; (n \geq 1)\end{cases}<br>\end{aligned}<br>$$</p>
+<p>$Q$位于0和1之间，$R_i&#x3D;1+r^{2^i}$。$r$在$(0, 1)$，$D_1&#x3D;D_0 \cdot R_0&#x3D;(1-r)(1+r)&#x3D;1-r^2$，如公式（8）所示。同样，$D_n&#x3D;D_{n-1} \cdot R_{n-1}$。重复这个过程$n$次，分母变为$D_n&#x3D;1-r^{2^n}$，随着n的增加，它收敛到1。同时，分子收敛到Q的倒数。给定$D_i&#x3D;1-k$，可以使用$R_i&#x3D;1+k&#x3D;2-D_i$计算$R_{i}$，通过取$D_{i}$的2的补码可以得到$R_{i}$。</p>
+<p>输入的指数值和是20位的值表示，由一个10位的整数和一个10位的小数组成。为了使总的指数和位于(0, 1)的范围内，总的和通过一个移位量Sa向右移位。移位量是通过检测总和中最高位1的位置来确定的。最高位检测器是LOD，检测整数部分中最高位1的位置。如果最高位1的位置是P，那么Sa &#x3D; P + 1。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/tcas_softmax_reciprocal_unit_detail.png" alt="倒数单元"></p>
+<p>对于8位输入是4次迭代，对于16位输入是5次迭代。</p>
+<hr>
+<h2 id="TF-MVP-Novel-Sparsity-Aware-Transformer-Accelerator-with-Mixed-Length-Vector-Pruning"><a href="#TF-MVP-Novel-Sparsity-Aware-Transformer-Accelerator-with-Mixed-Length-Vector-Pruning" class="headerlink" title="TF-MVP: Novel Sparsity-Aware Transformer Accelerator with Mixed-Length Vector Pruning"></a>TF-MVP: Novel Sparsity-Aware Transformer Accelerator with Mixed-Length Vector Pruning</h2><h3 id="LN的硬件优化"><a href="#LN的硬件优化" class="headerlink" title="LN的硬件优化"></a>LN的硬件优化</h3><p>LN的公式：<br>$$L N(x)&#x3D;\frac{x-\operatorname{Mean}(x)}{\sqrt{\operatorname{Var}(x)+\varepsilon}} \cdot \gamma+\beta$$</p>
+<p>论文主要是对方差部分进行优化：</p>
+<p>$$<br>\operatorname{Var}(x)&#x3D;E{[x-E(x)]^2}&#x3D;E(x^2)-[E(x)]^2<br>$$</p>
+<p>按照数学公式可以把方差变成两个期望值相减，因此做到只进行一次数据访问以及并行计算（文章提到，原先需要两次数据访问，第一次用于计算均值，第二次用于计算(x-均值)的差）。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/integer_only_LN_arch.png" alt="LN部分的优化"></p>
+<h3 id="SoftMax的硬件优化"><a href="#SoftMax的硬件优化" class="headerlink" title="SoftMax的硬件优化"></a>SoftMax的硬件优化</h3><p>借鉴的方案里提出的是ShiftMax，有一定的硬件友好性，但是作者认为它仍然需要大量的除法操作，所以进一步改进。关键思想是通过减去最大值来缩放参数，然后使用指数函数的底数变换公式进行等效变换：</p>
+<p>$$<br>\operatorname{Softmax}\left(x_i\right)&#x3D;\exp \left{x_i-X_{\max }-\ln \left[\sum_j^N \exp \left(x_{\mathrm{j}}-X_{\max }\right)\right]\right}<br>$$</p>
+<p>$$<br>\begin{aligned}<br>\exp (x) &amp; &#x3D;2^{\left[\left(\log _2^{\mathrm{e}}\right) \cdot x\right]}&#x3D;2^{u+v} \approx 2^u \cdot(1+0.5 v) \<br>\ln (x) &amp; &#x3D;\ln 2 \cdot \log _2 x&#x3D;\ln 2 \cdot\left(\mathrm{w}+\log _2 k\right) \<br>&amp; \approx \ln 2 \cdot(w+k-1)<br>\end{aligned}<br>$$</p>
+<p>其中，<br>$$<br>\left{\begin{array}{l}<br>u&#x3D;\left\lceil\left(\log _2^{\mathrm{e}}\right) \cdot x\right\rceil \<br>v&#x3D;\left(\log _2^{\mathrm{e}}\right) \cdot x-u \<br>k \cdot 2^w&#x3D;x \<br>k \in[1,2)<br>\end{array}\right.<br>$$</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/integer_only_softmax_arch.png" alt="softmax部分的优化"></p>
+<h3 id="GELU激活的硬件优化"><a href="#GELU激活的硬件优化" class="headerlink" title="GELU激活的硬件优化"></a>GELU激活的硬件优化</h3><p>$$<br>\operatorname{Gelu}(x)&#x3D;x \cdot \frac{1}{\sqrt{2 \pi}} \int_{-\infty}^x e^{-t^2 &#x2F; 2} d t \approx x \cdot \frac{1}{2}\left[1+L\left(\frac{x}{\sqrt{2}}\right)\right]<br>$$</p>
+<p>$L(x)$函数如下：<br>$$<br>L(x)&#x3D;\operatorname{sgn}(x)\left[\alpha(\operatorname{clip}(|x|, \max &#x3D;-\beta)+\beta)^2+1\right]<br>$$</p>
+<p>其中$\alpha &#x3D; -0.2888$，$\beta &#x3D; -1.769$。</p>
+<hr>
+<h2 id="I-LLM-Efficient-Integer-Only-Inference-for-Fully-Quantized-Low-Bit-Large-Language-Models"><a href="#I-LLM-Efficient-Integer-Only-Inference-for-Fully-Quantized-Low-Bit-Large-Language-Models" class="headerlink" title="I-LLM: Efficient Integer-Only Inference for Fully-Quantized Low-Bit Large Language Models"></a>I-LLM: Efficient Integer-Only Inference for Fully-Quantized Low-Bit Large Language Models</h2><h3 id="算法过程"><a href="#算法过程" class="headerlink" title="算法过程"></a>算法过程</h3><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/I-LLM_algorithm_process.png" alt="I-LLM的算法过程"></p>
+<p>论文核心是动态量化部分，根据计算的结果选取合适的scale。作者定义矩阵乘法如下：</p>
+<p>$$<br>\boldsymbol{Y}^{\boldsymbol{I}}, m_y^I, k_y^I, z p^I&#x3D;\mathcal{M}\left(m_1^I, k_1^I, z p_1^I, \boldsymbol{X}_1^{\boldsymbol{I}}, m_2^I, k_2^I, z p_2^I, \boldsymbol{X}_2^{\boldsymbol{I}}\right)<br>$$</p>
+<p>其中，$s &#x3D; \frac{m^I}{2^{k^I}}$，$m^{I}$和$k^{I}$为8位整数，$zp_{1}^{I}$为对应的零点。进行两个矩阵的量化后计算出一个中间结果和对应的浮点结果：</p>
+<p>$$<br>\boldsymbol{P}^{\boldsymbol{I}}&#x3D;\left(\boldsymbol{X}_1^I-z p_1^I\right)\left(\boldsymbol{X}_2^I-z p_2^I\right), \quad \boldsymbol{Y}&#x3D;\boldsymbol{P}^{\boldsymbol{I}} \frac{m_1^I m_2^I}{2^{k_1^I+k_2^I}}<br>$$</p>
+<p>获得输出的量化scale：</p>
+<p>$$<br>\frac{m_y^I}{2^{k_y^I}} \approx s_y&#x3D;\frac{\left(p_{\max }^I-p_{\min }^I\right) \cdot m_1^I \cdot m_2^I}{\left(2^{n^I}-1\right) \cdot 2^{k_1^I+k_2^I}}<br>$$</p>
+<p>多次迭代后找到合适的量化参数，论文设置$m_{y}^{I} &#x3D; 256$然后来搜索合适的$k_{y}^{I}$：</p>
+<p>$$<br>\underset{m_y^I, k_y^I}{\arg \min }\left|\frac{\left(p_{\max }^I-p_{\min }^I\right) \cdot m_1^I \cdot m_2^I}{\left(2^{n^I}-1\right) \cdot 2^{k_1^I+k_2^I}}-\frac{m_y^I}{2^{k_y^I}}\right|_1 \quad \text { s.t. } \quad m_y^I, k_y^I \in 0,1,2, \ldots, 255<br>$$</p>
+<p>利用位移操作来实现指数函数和除法操作，这些操作是动态量化所必需的。例如，使用位移操作来近似指数函数：</p>
+<p>$$<br>\begin{gathered}<br>k_y^I&#x3D;\left\lfloor\log <em>2\left(\frac{256 \cdot\left(2^{n^I}-1\right) \cdot 2^{k_1^I+k_2^I}}{p</em>{\max }^I-p_{\min }^I}\right)\right\rfloor&#x3D;\left\lfloor\log <em>2\left(\frac{\left(2^{n^I}-1\right) \cdot 2^{k_1^I+k_2^I+8}}{p</em>{\max }^I-p_{\min }^I}\right)\right\rfloor \<br>m_y^I&#x3D;\left\lfloor\frac{\left(p_{\max }^I-p_{\min }^I\right) \cdot m_{x 1}^I \cdot m_{x 2}^I}{n^I} \gg\left(k_1^I+k_2^I-k_y^I\right)\right\rfloor \<br>z_y^I&#x3D;\left\lfloor\frac{-p_{\min }^I \cdot\left(2^{n^I}-1\right)}{p_{\max }^I-p_{\min }^I}\right\rfloor, \quad Y^I&#x3D;\left\lfloor\frac{\left(P^I-p_{\min }^I\right) \cdot\left(2^{n^I}-1\right)}{p_{\max }^I-p_{\min }^I}\right\rfloor<br>\end{gathered}<br>$$</p>
+<p>DI-MatMul只使用整数运算，仅引入了一些额外的整数标量计算，使其比之前的方法更高效。能够主动识别并适应输入数据的多样性，从而减少量化误差，提高整体模型性能。</p>
+<h3 id="DI-SoftMax"><a href="#DI-SoftMax" class="headerlink" title="DI-SoftMax"></a>DI-SoftMax</h3><p>论文认为观察到的指数函数在-20处的值可以认为是零，对于每个令牌，只有$(x_{max} - 20, x_{max})$范围内的值对结果有贡献。对于单个令牌，通过限制$p^{I}_{min}$来约束量化范围：</p>
+<p>$$<br>p_{\text {min }}^I&#x3D;\max \left(p_{\text {min }}^I, p_{\text {max }}^I-c^I\right)<br>$$</p>
+<p>其中，$c^I&#x3D;m_c^I \cdot 2^{k_1^I+k_2^I-k_c^I}$。因此，无论动态范围如何，量化范围长度永远不会超过$c$。论文选取$c &#x3D; 15$，$c&#x3D;\frac{m_C^I}{2^{k_C^I}}$。</p>
+<h3 id="DI-Exp"><a href="#DI-Exp" class="headerlink" title="DI-Exp"></a>DI-Exp</h3><p>$$<br>\mathrm{e}^{\boldsymbol{x}^I \cdot\left(m_x^I \gg k_x^I\right)}&#x3D;2^{x^I \cdot\left(m_x^I \gg k_x^I\right) \cdot \log _2 e}&#x3D;2^{\boldsymbol{x}^I \cdot m_x^I \cdot\left(\log _2 e \gg k_x^I\right)}<br>$$</p>
+<p>其中，$s&#x3D;\frac{\log _2 e}{2^{k_x^I}}$，$s^I&#x3D;\left\lfloor\frac{2^{k_x^I}}{\log _2 e}\right\rceil$，则$\mathrm{e}^{\boldsymbol{x}^I \cdot\left(m_x^I \gg k_x^I\right)} \approx 2^{\left(\left\lfloor\frac{x^I}{s^I}\right\rfloor+\left(\boldsymbol{x}^I % s^I\right) s\right)} \approx 2^{-q^I+r^I \cdot s}$，其中$q^I&#x3D;-\left\lfloor\frac{x^I}{s^I}\right\rfloor, \quad r^I&#x3D;x^I % s^I$，因为$r^I \cdot s \in(-1,0]$，可以在该区间内简单地执行线性插值得到$2^{r^I \cdot s} \approx 1-\frac{r^I}{2 \cdot s^I}$：</p>
+<p>$$<br>\mathrm{e}^{\boldsymbol{x}^I \cdot\left(m_x^I \gg k_x^I\right)} \approx\left(1-\frac{r^I}{2 \cdot s^I}\right) \gg q^I<br>$$</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/I-LLM_DISoftmax_algorithm.png" alt="DI-Exp的算法"></p>
+<h3 id="DI-Norm"><a href="#DI-Norm" class="headerlink" title="DI-Norm"></a>DI-Norm</h3><p>对LayerNorm和RMSNorm的输入进行逐通道量化。直接计算均值，计算方差使用位检查方法来实现更高的精度。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/I-LLM_DINorm_algorithm.png" alt="DI-Norm的算法"></p>
+<h3 id="DI-SwiGLU"><a href="#DI-SwiGLU" class="headerlink" title="DI-SwiGLU"></a>DI-SwiGLU</h3><p>在块重建阶段，将SwiGLU的SiLU激活函数分解为$\operatorname{SiLU}(x)&#x3D;x \cdot \sigma(x)$，以实现非线性平滑。主要就是DI-Exp的多次调用。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/I-LLM_DISwiGLU_algorithm.png" alt="DI-SwiGLU"></p>
+<h3 id="性能"><a href="#性能" class="headerlink" title="性能"></a>性能</h3><p><strong>模型：</strong> 包括OPT，LLaMA，LLaMA2、LLaMA3-8B<br><strong>数据集：</strong> WikiText2和C4上测试量化对困惑度的影响。零样本任务中评估准确性，包括PIQA，ARC，BoolQ，HellaSwag，Winogrande</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/I-LLM_test_result1.png" alt="在WikiText2和C4上量化Llama的性能对比"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/I-LLM_test_result2.png" alt="在WikiText2和C4上量化Llama的性能对比"></p>
+<hr>
+<h2 id="An-Efficient-FPGA-Based-Accelerator-for-Swin-Transformer"><a href="#An-Efficient-FPGA-Based-Accelerator-for-Swin-Transformer" class="headerlink" title="An Efficient FPGA-Based Accelerator for Swin Transformer"></a>An Efficient FPGA-Based Accelerator for Swin Transformer</h2><h3 id="GELU部分"><a href="#GELU部分" class="headerlink" title="GELU部分"></a>GELU部分</h3><p>$$<br>g\left(x_i\right)&#x3D;0.5 x_i\left(1+\tanh \left(\sqrt{\frac{2}{\pi}}\left(x_i+0.044715 x_i^3\right)\right)\right)<br>$$</p>
+<p>转化为：</p>
+<p>$$<br>\begin{aligned}<br>&amp; g\left(x_i\right)&#x3D;0.5 x_i\left(1+\frac{e^{h\left(x_i\right)}-e^{-h\left(x_i\right)}}{e^{h\left(x_i\right)}+e^{-h\left(x_i\right)}}\right) \<br>&amp; &#x3D;\frac{x_i e^{h\left(x_i\right)}}{e^{h\left(x_i\right)}+e^{-h\left(x_i\right)}}&#x3D;\frac{x_i}{1+2^{-2 \log _2 e \cdot h\left(x_i\right)}}<br>\end{aligned}<br>$$</p>
+<p>其中，$h\left(x_i\right)&#x3D;\sqrt{\frac{2}{\pi}}\left(x_i+0.044715 x_i^3\right)$，$2^{-2 \log _2 e \cdot h\left(x_i\right)}$的指数部分则用$-2 \log _2 e \cdot \sqrt{\frac{2}{\pi}}\left(x_i+0.044715 x_i^3\right)$表示。</p>
+<p>$\log _2 e$用二进制近似表示为：1.0111。表示为1 + 0.1 - 0.0001。由此使用两次移位操作和两次加减操作来计算$\log _2 e \times x_i$。</p>
+<p>$−2 \log_2 e · q &#x2F; (2π)$可以用二进制近似表示为：-10.0101 &#x3D; -10 - 0.01 - 0.0001。0.044715可以用二进制近似表示为：0.000011 &#x3D; 0.000001 + 0.00001。</p>
+<h3 id="SoftMax部分"><a href="#SoftMax部分" class="headerlink" title="SoftMax部分"></a>SoftMax部分</h3><p>$$<br>f\left(x_i\right)&#x3D;\frac{2^{\log <em>2 e\left(x_i-x</em>{\max }\right)}}{\sum_{j&#x3D;1}^n 2^{\log <em>2 e\left(x_j-x</em>{\max }\right)}}<br>$$</p>
+<p>SoftMax先转化为以2为底的幂函数：</p>
+<p>$$\begin{aligned} 2^{\log _2 e \cdot x_i} &amp; &#x3D;2^{v\left(x_i\right)}&#x3D;2^{\operatorname{int}\left(x_i\right)} \cdot 2^{\operatorname{frac}\left(x_i\right)} \ &amp; &#x3D;2^{\text {frac }\left(x_i\right)} \ll \operatorname{int}\left(x_i\right)\end{aligned}$$</p>
+<p>然后对$2^{\log <em>2 e \cdot x_i}$集中做处理，$\log <em>2 e \cdot x_i$化解为整数和小数，整数为移位，小数部分分段线性近似。使用$frac(x</em>{i})$的第9位、第8位和第7位作为标志，根据存储在查找表中的$K</em>{i}$和$B_{j}$的值，执行分段线性近似来计算$2^{frac(x_{i})}$。</p>
+<hr>
+<h2 id="PEANO-ViT-Power-Efficient-Approximations-of-Non-Linearities-in-Vision-Transformers"><a href="#PEANO-ViT-Power-Efficient-Approximations-of-Non-Linearities-in-Vision-Transformers" class="headerlink" title="PEANO-ViT: Power-Efficient Approximations of Non-Linearities in Vision Transformers"></a>PEANO-ViT: Power-Efficient Approximations of Non-Linearities in Vision Transformers</h2><h3 id="LayerNorm部分"><a href="#LayerNorm部分" class="headerlink" title="LayerNorm部分"></a>LayerNorm部分</h3><p>Layernorm部分主要是对方差的根号除法部分的整体优化：</p>
+<p>$$<br>\frac{1}{\sqrt{X}}&#x3D;2^{\log _2 \frac{1}{\sqrt{X}}}, \quad \log _2 \frac{1}{\sqrt{X}}&#x3D;\frac{-1}{2} \log _2 X<br>$$</p>
+<p>$$<br>\begin{gathered}<br>X&#x3D;\sum_{i&#x3D;0}^{n-1} 2^i b_i&#x3D;2^{k_x}+\sum_{i&#x3D;0}^{k_x-1} 2^i b_i&#x3D;2^{k_x}(1+x) \<br>\log _2 X \approx k_x+x<br>\end{gathered}<br>$$</p>
+<p>$k_x$是$X$的第一个1bit的位置，$x \in[0,1)$：</p>
+<p>$$<br>\begin{gathered}<br>2^{\frac{-\left(k_x+x\right)}{2}}&#x3D;2^u \cdot 2^v \<br>\frac{1}{\sqrt{X}} \approx 2^{\tilde{v}}&lt;&lt;u<br>\end{gathered}<br>$$</p>
+<h3 id="SoftMax的exp近似"><a href="#SoftMax的exp近似" class="headerlink" title="SoftMax的exp近似"></a>SoftMax的exp近似</h3><p>使用帕德近似处理SoftMax的exp：</p>
+<p>$$<br>\operatorname{PEANOexp}(\tilde{x})&#x3D; \begin{cases}0 &amp; \text { if } \tilde{x}&lt;-3 \ \frac{12+6 \tilde{x}+\tilde{x}^2}{12-6 \tilde{x}+\tilde{x}^2} &amp; \text { if } \tilde{x} \geq-3\end{cases}<br>$$</p>
+<h3 id="GELU近似"><a href="#GELU近似" class="headerlink" title="GELU近似"></a>GELU近似</h3><p>使用多项式分段处理GELU：</p>
+<p>$$<br>\text { PEANO-GELU }(x)&#x3D; \begin{cases}0 &amp; \text { if } x&lt;-3 \ -0.0414(x+3) &amp; \text { if }-3 \leq x&lt;-2.1 \ -0.0982(x+2.1)-0.0373 &amp; \text { if }-2.1 \leq x&lt;-0.75 \ 0.2266(x+0.75)-0.17 &amp; \text { if }-0.75 \leq x&lt;0 \ 0.6914 x &amp; \text { if } 0 \leq x&lt;0.5 \ 1.0617(x-0.5)+0.3457 &amp; \text { if } 0.5 \leq x&lt;3 \ x &amp; \text { if } x \geq 3\end{cases}<br>$$</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>非线性模块主要的方法包含：</p>
+<ul>
+<li>统筹一个多项式替代</li>
+<li>分段小函数替代</li>
+<li>查找表替代计算</li>
+<li>Exp转为2的左移右移计算</li>
+<li>基于自身量化方法做专属优化（如I-LLM）</li>
+</ul>
+<hr>
+<h2 id="其他近似方法补充"><a href="#其他近似方法补充" class="headerlink" title="其他近似方法补充"></a>其他近似方法补充</h2><h3 id="GELU的泰勒级数展开与帕德近似"><a href="#GELU的泰勒级数展开与帕德近似" class="headerlink" title="GELU的泰勒级数展开与帕德近似"></a>GELU的泰勒级数展开与帕德近似</h3><p>$$<br>\operatorname{Gelu}(x)&#x3D;x \cdot \frac{1}{2\sqrt{2 \pi}} \operatorname{erf}(x)<br>$$</p>
+<p>泰勒展开：</p>
+<p>$$<br>\begin{aligned}<br>\operatorname{erf} z &amp; &#x3D;\frac{2}{\sqrt{\pi}} \sum_{n&#x3D;0}^{\infty} \frac{(-1)^n z^{2 n+1}}{n!(2 n+1)} \<br>&amp; &#x3D;\frac{2}{\sqrt{\pi}}\left(z-\frac{z^3}{3}+\frac{z^5}{10}-\frac{z^7}{42}+\frac{z^9}{216}-\cdots\right)<br>\end{aligned}<br>$$</p>
+<p>帕德近似：</p>
+<p>$$\operatorname{erf}(x) \approx \frac{2}{15 \sqrt{\pi}} \cdot \frac{49140 x+3570 x^3+739 x^5}{165 x^4+1330 x^2+3276}$$</p>
+<p>全局帕德近似：</p>
+<p>$$<br>\operatorname{erf} x \approx \operatorname{sgn} x \cdot \sqrt{1-\exp \left(-x^2 \frac{\frac{4}{\pi}+a x^2}{1+a x^2}\right)}<br>$$</p>
+<h3 id="SoftMax的帕德近似"><a href="#SoftMax的帕德近似" class="headerlink" title="SoftMax的帕德近似"></a>SoftMax的帕德近似</h3><p>$$<br>e^x \approx \frac{1+(1 &#x2F; 9) * x^2+(1 &#x2F; 2) * x+(1 &#x2F; 72) * x^3+(1 &#x2F; 1008) * x^4+(1 &#x2F; 30240) * x^5}{1+(1 &#x2F; 9) * x^2-(1 &#x2F; 2) * x-(1 &#x2F; 72) * x^3+(1 &#x2F; 1008) * x^4-(1 &#x2F; 30240) * x^5}<br>$$</p>
+<h3 id="LayerNorm的方差优化"><a href="#LayerNorm的方差优化" class="headerlink" title="LayerNorm的方差优化"></a>LayerNorm的方差优化</h3><p>$$<br>\operatorname{Var}(x)&#x3D;E{[x-E(x)]^2}&#x3D;E(x^2)-[E(x)]^2<br>$$</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://lazyreborn.site">Reborn</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://lazyreborn.site/2024/10/02/Transformer%E9%9D%9E%E7%BA%BF%E6%80%A7%E5%8D%95%E5%85%83%E7%9A%84%E7%A1%AC%E4%BB%B6%E4%BC%98%E5%8C%96%E6%96%B9%E6%A1%88%EF%BC%882024.10.02%EF%BC%89/">https://lazyreborn.site/2024/10/02/Transformer%E9%9D%9E%E7%BA%BF%E6%80%A7%E5%8D%95%E5%85%83%E7%9A%84%E7%A1%AC%E4%BB%B6%E4%BC%98%E5%8C%96%E6%96%B9%E6%A1%88%EF%BC%882024.10.02%EF%BC%89/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://lazyreborn.site" target="_blank">Reborn</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Transformer/">Transformer</a><a class="post-meta__tags" href="/tags/%E9%9D%9E%E7%BA%BF%E6%80%A7%E5%8D%95%E5%85%83/">非线性单元</a><a class="post-meta__tags" href="/tags/%E7%A1%AC%E4%BB%B6%E5%8A%A0%E9%80%9F/">硬件加速</a><a class="post-meta__tags" href="/tags/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">论文笔记</a></div><div class="post_share"><div class="social-share" data-image="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260417152216_144_15.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://npm.elemecdn.com/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://npm.elemecdn.com/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2025/04/17/%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F%E5%99%A8%E4%B8%AD%E7%9A%84%E6%95%B0%E5%88%B6%E6%A0%BC%E5%BC%8F%E4%B8%8E%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84/"><img class="prev-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260417152414_146_15.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">大语言模型推理加速器中的数制格式与基础架构</div></div></a></div><div class="next-post pull-right"><a href="/2022/02/01/hello-world/"><img class="next-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://s2.loli.net/2024/10/02/R2IBHVe7S8dLctO.webp" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">躺在云上</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2025/04/17/%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F%E5%99%A8%E4%B8%AD%E7%9A%84%E6%95%B0%E5%88%B6%E6%A0%BC%E5%BC%8F%E4%B8%8E%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84/" title="大语言模型推理加速器中的数制格式与基础架构"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260417152414_146_15.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-04-17</div><div class="title">大语言模型推理加速器中的数制格式与基础架构</div></div></a></div><div><a href="/2025/05/13/%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F%E5%99%A8%E4%B8%AD%E7%9A%84%E8%BF%9B%E9%98%B6%E6%95%B0%E5%88%B6%E6%A0%BC%E5%BC%8F/" title="大语言模型推理加速器中的进阶数制格式"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260417152326_145_15.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-05-13</div><div class="title">大语言模型推理加速器中的进阶数制格式</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://s2.loli.net/2024/10/02/tKw8pe7z9TLGkAR.webp" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Reborn</div><div class="author-info__description">有在好好学习...吧？</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">5</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">9</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Rebornals"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/Rebornals" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="/blog@lazyreborn.site" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">好好好</div></div><div class="card-widget" id="card-poem"><div id="poem_sentence"></div><div id="poem_info"><div id="poem_dynasty"></div><div id="poem_author"></div></div></div><script src="https://cdn.jsdelivr.net/npm/js-heo@1.0.11/poem/jinrishici.js" charset="utf-8"></script><script type="text/javascript">jinrishici.load(function(result) {
+var sentence = document.querySelector("#poem_sentence")
+var author = document.querySelector("#poem_author")
+var dynasty = document.querySelector("#poem_dynasty")
+
+var sentenceText = result.data.content
+sentenceText = sentenceText.substr(0, sentenceText.length - 1);
+sentence.innerHTML = sentenceText
+dynasty.innerHTML = result.data.origin.dynasty
+author.innerHTML = result.data.origin.author + '《' + result.data.origin.title + '》'
+});</script><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Quest-Query-Aware-Sparsity-for-Efficient-Long-Context-LLM-Inference"><span class="toc-number">1.</span> <span class="toc-text">Quest: Query-Aware Sparsity for Efficient Long-Context LLM Inference</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BB%E8%A6%81%E5%8C%BA%E5%88%AB"><span class="toc-number">1.1.</span> <span class="toc-text">主要区别</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Hardware-Efficient-SoftMax-Architecture-With-Bit-Wise-Exponentiation-and-Reciprocal-Calculation"><span class="toc-number">2.</span> <span class="toc-text">Hardware-Efficient SoftMax Architecture With Bit-Wise Exponentiation and Reciprocal Calculation</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A2%84%E5%A4%84%E7%90%86%E5%8D%95%E5%85%83"><span class="toc-number">2.1.</span> <span class="toc-text">预处理单元</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8C%87%E6%95%B0%E5%8D%95%E5%85%83"><span class="toc-number">2.2.</span> <span class="toc-text">指数单元</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%80%92%E6%95%B0%E5%8D%95%E5%85%83"><span class="toc-number">2.3.</span> <span class="toc-text">倒数单元</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TF-MVP-Novel-Sparsity-Aware-Transformer-Accelerator-with-Mixed-Length-Vector-Pruning"><span class="toc-number">3.</span> <span class="toc-text">TF-MVP: Novel Sparsity-Aware Transformer Accelerator with Mixed-Length Vector Pruning</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#LN%E7%9A%84%E7%A1%AC%E4%BB%B6%E4%BC%98%E5%8C%96"><span class="toc-number">3.1.</span> <span class="toc-text">LN的硬件优化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SoftMax%E7%9A%84%E7%A1%AC%E4%BB%B6%E4%BC%98%E5%8C%96"><span class="toc-number">3.2.</span> <span class="toc-text">SoftMax的硬件优化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GELU%E6%BF%80%E6%B4%BB%E7%9A%84%E7%A1%AC%E4%BB%B6%E4%BC%98%E5%8C%96"><span class="toc-number">3.3.</span> <span class="toc-text">GELU激活的硬件优化</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#I-LLM-Efficient-Integer-Only-Inference-for-Fully-Quantized-Low-Bit-Large-Language-Models"><span class="toc-number">4.</span> <span class="toc-text">I-LLM: Efficient Integer-Only Inference for Fully-Quantized Low-Bit Large Language Models</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%97%E6%B3%95%E8%BF%87%E7%A8%8B"><span class="toc-number">4.1.</span> <span class="toc-text">算法过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DI-SoftMax"><span class="toc-number">4.2.</span> <span class="toc-text">DI-SoftMax</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DI-Exp"><span class="toc-number">4.3.</span> <span class="toc-text">DI-Exp</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DI-Norm"><span class="toc-number">4.4.</span> <span class="toc-text">DI-Norm</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DI-SwiGLU"><span class="toc-number">4.5.</span> <span class="toc-text">DI-SwiGLU</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%A7%E8%83%BD"><span class="toc-number">4.6.</span> <span class="toc-text">性能</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#An-Efficient-FPGA-Based-Accelerator-for-Swin-Transformer"><span class="toc-number">5.</span> <span class="toc-text">An Efficient FPGA-Based Accelerator for Swin Transformer</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#GELU%E9%83%A8%E5%88%86"><span class="toc-number">5.1.</span> <span class="toc-text">GELU部分</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SoftMax%E9%83%A8%E5%88%86"><span class="toc-number">5.2.</span> <span class="toc-text">SoftMax部分</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PEANO-ViT-Power-Efficient-Approximations-of-Non-Linearities-in-Vision-Transformers"><span class="toc-number">6.</span> <span class="toc-text">PEANO-ViT: Power-Efficient Approximations of Non-Linearities in Vision Transformers</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#LayerNorm%E9%83%A8%E5%88%86"><span class="toc-number">6.1.</span> <span class="toc-text">LayerNorm部分</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SoftMax%E7%9A%84exp%E8%BF%91%E4%BC%BC"><span class="toc-number">6.2.</span> <span class="toc-text">SoftMax的exp近似</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GELU%E8%BF%91%E4%BC%BC"><span class="toc-number">6.3.</span> <span class="toc-text">GELU近似</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">6.4.</span> <span class="toc-text">总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B6%E4%BB%96%E8%BF%91%E4%BC%BC%E6%96%B9%E6%B3%95%E8%A1%A5%E5%85%85"><span class="toc-number">7.</span> <span class="toc-text">其他近似方法补充</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#GELU%E7%9A%84%E6%B3%B0%E5%8B%92%E7%BA%A7%E6%95%B0%E5%B1%95%E5%BC%80%E4%B8%8E%E5%B8%95%E5%BE%B7%E8%BF%91%E4%BC%BC"><span class="toc-number">7.1.</span> <span class="toc-text">GELU的泰勒级数展开与帕德近似</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SoftMax%E7%9A%84%E5%B8%95%E5%BE%B7%E8%BF%91%E4%BC%BC"><span class="toc-number">7.2.</span> <span class="toc-text">SoftMax的帕德近似</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LayerNorm%E7%9A%84%E6%96%B9%E5%B7%AE%E4%BC%98%E5%8C%96"><span class="toc-number">7.3.</span> <span class="toc-text">LayerNorm的方差优化</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/01/23/%E6%B7%B7%E5%90%88%E7%B2%BE%E5%BA%A6%E7%9A%84%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF%E8%AE%BE%E8%AE%A1/" title="混合精度的数字电路设计"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/guaiqiwuyu.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="混合精度的数字电路设计"/></a><div class="content"><a class="title" href="/2026/01/23/%E6%B7%B7%E5%90%88%E7%B2%BE%E5%BA%A6%E7%9A%84%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF%E8%AE%BE%E8%AE%A1/" title="混合精度的数字电路设计">混合精度的数字电路设计</a><time datetime="2026-01-23T13:58:16.000Z" title="发表于 2026-01-23 21:58:16">2026-01-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/05/13/%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F%E5%99%A8%E4%B8%AD%E7%9A%84%E8%BF%9B%E9%98%B6%E6%95%B0%E5%88%B6%E6%A0%BC%E5%BC%8F/" title="大语言模型推理加速器中的进阶数制格式"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260417152326_145_15.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="大语言模型推理加速器中的进阶数制格式"/></a><div class="content"><a class="title" href="/2025/05/13/%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F%E5%99%A8%E4%B8%AD%E7%9A%84%E8%BF%9B%E9%98%B6%E6%95%B0%E5%88%B6%E6%A0%BC%E5%BC%8F/" title="大语言模型推理加速器中的进阶数制格式">大语言模型推理加速器中的进阶数制格式</a><time datetime="2025-05-13T14:30:00.000Z" title="发表于 2025-05-13 22:30:00">2025-05-13</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/04/17/%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F%E5%99%A8%E4%B8%AD%E7%9A%84%E6%95%B0%E5%88%B6%E6%A0%BC%E5%BC%8F%E4%B8%8E%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84/" title="大语言模型推理加速器中的数制格式与基础架构"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260417152414_146_15.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="大语言模型推理加速器中的数制格式与基础架构"/></a><div class="content"><a class="title" href="/2025/04/17/%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F%E5%99%A8%E4%B8%AD%E7%9A%84%E6%95%B0%E5%88%B6%E6%A0%BC%E5%BC%8F%E4%B8%8E%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84/" title="大语言模型推理加速器中的数制格式与基础架构">大语言模型推理加速器中的数制格式与基础架构</a><time datetime="2025-04-17T14:30:00.000Z" title="发表于 2025-04-17 22:30:00">2025-04-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/10/02/Transformer%E9%9D%9E%E7%BA%BF%E6%80%A7%E5%8D%95%E5%85%83%E7%9A%84%E7%A1%AC%E4%BB%B6%E4%BC%98%E5%8C%96%E6%96%B9%E6%A1%88%EF%BC%882024.10.02%EF%BC%89/" title="Transformer非线性单元的硬件优化方案"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260417152216_144_15.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Transformer非线性单元的硬件优化方案"/></a><div class="content"><a class="title" href="/2024/10/02/Transformer%E9%9D%9E%E7%BA%BF%E6%80%A7%E5%8D%95%E5%85%83%E7%9A%84%E7%A1%AC%E4%BB%B6%E4%BC%98%E5%8C%96%E6%96%B9%E6%A1%88%EF%BC%882024.10.02%EF%BC%89/" title="Transformer非线性单元的硬件优化方案">Transformer非线性单元的硬件优化方案</a><time datetime="2024-10-02T14:30:00.000Z" title="发表于 2024-10-02 22:30:00">2024-10-02</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/02/01/hello-world/" title="躺在云上"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://s2.loli.net/2024/10/02/R2IBHVe7S8dLctO.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="躺在云上"/></a><div class="content"><a class="title" href="/2022/02/01/hello-world/" title="躺在云上">躺在云上</a><time datetime="2022-01-31T16:00:00.000Z" title="发表于 2022-02-01 00:00:00">2022-02-01</time></div></div></div></div></div></div></main><footer id="footer" style="background: transparent"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2026 By Reborn</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://npm.elemecdn.com/@fancyapps/ui/dist/fancybox.umd.js"></script><script src="https://npm.elemecdn.com/vanilla-lazyload/dist/lazyload.iife.min.js"></script><script src="https://npm.elemecdn.com/node-snackbar/dist/snackbar.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"></div><div class="aplayer no-destroy" data-id="8715741196" data-server="tencent" data-type="playlist"   data-order="list" data-fixed="true" data-preload="auto" data-autoplay="false" data-mutex="true" ></div><canvas class="fireworks" mobile="false"></canvas><script src="https://npm.elemecdn.com/butterfly-extsrc/dist/fireworks.min.js"></script><link rel="stylesheet" href="https://npm.elemecdn.com/aplayer/dist/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://npm.elemecdn.com/aplayer/dist/APlayer.min.js"></script><script src="https://npm.elemecdn.com/butterfly-extsrc/metingjs/dist/Meting.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><!-- hexo injector body_end start --><script data-pjax>
+  function butterfly_swiper_injector_config(){
+    var parent_div_git = document.getElementById('recent-posts');
+    var item_html = '<div class="recent-post-item" style="height: auto;width: 100%"><div class="blog-slider swiper-container-fade swiper-container-horizontal" id="swiper_container"><div class="blog-slider__wrp swiper-wrapper" style="transition-duration: 0ms;"><div class="blog-slider__item swiper-slide" style="width: 750px; opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><a class="blog-slider__img" href="2026/01/23/混合精度的数字电路设计/" alt=""><img width="48" height="48" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/guaiqiwuyu.webp" alt="" onerror="this.src=https://unpkg.zhimg.com/akilar-candyassets/image/loading.gif; this.onerror = null;"/></a><div class="blog-slider__content"><span class="blog-slider__code">2026-01-23</span><a class="blog-slider__title" href="2026/01/23/混合精度的数字电路设计/" alt="">混合精度的数字电路设计</a><div class="blog-slider__text">最近在看的</div><a class="blog-slider__button" href="2026/01/23/混合精度的数字电路设计/" alt="">详情   </a></div></div><div class="blog-slider__item swiper-slide" style="width: 750px; opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><a class="blog-slider__img" href="2022/02/01/hello-world/" alt=""><img width="48" height="48" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://s2.loli.net/2024/10/02/R2IBHVe7S8dLctO.webp" alt="" onerror="this.src=https://unpkg.zhimg.com/akilar-candyassets/image/loading.gif; this.onerror = null;"/></a><div class="blog-slider__content"><span class="blog-slider__code">2022-02-01</span><a class="blog-slider__title" href="2022/02/01/hello-world/" alt="">躺在云上</a><div class="blog-slider__text">影子铺满了大地</div><a class="blog-slider__button" href="2022/02/01/hello-world/" alt="">详情   </a></div></div></div><div class="blog-slider__pagination swiper-pagination-clickable swiper-pagination-bullets"></div></div></div>';
+    console.log('已挂载butterfly_swiper')
+    parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+    }
+  var elist = 'undefined'.split(',');
+  var cpage = location.pathname;
+  var epage = 'all';
+  var flag = 0;
+
+  for (var i=0;i<elist.length;i++){
+    if (cpage.includes(elist[i])){
+      flag++;
+    }
+  }
+
+  if ((epage ==='all')&&(flag == 0)){
+    butterfly_swiper_injector_config();
+  }
+  else if (epage === cpage){
+    butterfly_swiper_injector_config();
+  }
+  </script><script defer src="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper.min.js"></script><script defer data-pjax src="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper_init.js"></script><!-- hexo injector body_end end --><script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/"});</script></body></html>

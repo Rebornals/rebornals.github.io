@@ -1,0 +1,320 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>大语言模型推理加速器中的进阶数制格式 | Reborn</title><meta name="author" content="Reborn"><meta name="copyright" content="Reborn"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="毕设论文阅读笔记第二期，介绍Anda、AMXFP4、MicroScopiQ、BitMoD、HiFloat8、QLoRA、t分布等进阶内容">
+<meta property="og:type" content="article">
+<meta property="og:title" content="大语言模型推理加速器中的进阶数制格式">
+<meta property="og:url" content="https://lazyreborn.site/2025/05/13/%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F%E5%99%A8%E4%B8%AD%E7%9A%84%E8%BF%9B%E9%98%B6%E6%95%B0%E5%88%B6%E6%A0%BC%E5%BC%8F/index.html">
+<meta property="og:site_name" content="Reborn">
+<meta property="og:description" content="毕设论文阅读笔记第二期，介绍Anda、AMXFP4、MicroScopiQ、BitMoD、HiFloat8、QLoRA、t分布等进阶内容">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260417152326_145_15.jpg">
+<meta property="article:published_time" content="2025-05-13T14:30:00.000Z">
+<meta property="article:modified_time" content="2026-04-17T07:33:00.753Z">
+<meta property="article:author" content="Reborn">
+<meta property="article:tag" content="论文笔记">
+<meta property="article:tag" content="大语言模型">
+<meta property="article:tag" content="FP-INT混合计算">
+<meta property="article:tag" content="数制格式">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260417152326_145_15.jpg"><link rel="shortcut icon" href="https://s2.loli.net/2024/10/02/tKw8pe7z9TLGkAR.webp"><link rel="canonical" href="https://lazyreborn.site/2025/05/13/%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F%E5%99%A8%E4%B8%AD%E7%9A%84%E8%BF%9B%E9%98%B6%E6%95%B0%E5%88%B6%E6%A0%BC%E5%BC%8F/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://npm.elemecdn.com/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":true,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
+  source: {
+    justifiedGallery: {
+      js: 'https://npm.elemecdn.com/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://npm.elemecdn.com/flickr-justified-gallery/dist/fjGallery.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '大语言模型推理加速器中的进阶数制格式',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2026-04-17 15:33:00'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const now = new Date()
+          const hour = now.getHours()
+          const isNight = hour <= 6 || hour >= 18
+          if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+          else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><script src="https://npm.elemecdn.com/akilar-candyassets/image/js/SAO-Notify.js" async></script><link rel="stylesheet" type="text/css" href="https://npm.elemecdn.com/js-heo@1.0.11/mainColor/heoMainColor.css"><link rel="stylesheet" type="text/css" href="https://npm.elemecdn.com/js-heo@1.0.11/poem/poem.css"><link rel="stylesheet" href="/css/custom.css" media="defer" onload="this.media='all'"><!-- hexo injector head_end start --><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiperstyle.css" media="print" onload="this.media='all'"><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="Reborn" type="application/atom+xml">
+</head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>const preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")   
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+  }
+}
+window.addEventListener('load',()=> { preloader.endLoading() })
+if (false) {
+  document.addEventListener('pjax:send', () => { preloader.initLoading() })
+  document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+}</script><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://s2.loli.net/2024/10/02/tKw8pe7z9TLGkAR.webp" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">5</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">9</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/bangumis/index.html"><i class="fa-fw fas fa-home"></i><span> 追番</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260417152326_145_15.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Reborn</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/bangumis/index.html"><i class="fa-fw fas fa-home"></i><span> 追番</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">大语言模型推理加速器中的进阶数制格式</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-05-13T14:30:00.000Z" title="发表于 2025-05-13 22:30:00">2025-05-13</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-04-17T07:33:00.753Z" title="更新于 2026-04-17 15:33:00">2026-04-17</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">论文笔记</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="大语言模型推理加速器中的进阶数制格式"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><hr>
+<h2 id="Anda-Unlocking-Efficient-LLM-Inference-with-a-Variable-Length-Grouped-Activation-Data-Format"><a href="#Anda-Unlocking-Efficient-LLM-Inference-with-a-Variable-Length-Grouped-Activation-Data-Format" class="headerlink" title="Anda: Unlocking Efficient LLM Inference with a Variable-Length Grouped Activation Data Format"></a>Anda: Unlocking Efficient LLM Inference with a Variable-Length Grouped Activation Data Format</h2><h3 id="基本信息"><a href="#基本信息" class="headerlink" title="基本信息"></a>基本信息</h3><ul>
+<li>时间：2025年，HPCA</li>
+<li>作者：Chao Fang，Man Shi（通讯），Robin Geens, Arne Symons, Zhongfeng Wang（通讯），Marian Verhelst</li>
+<li>单位：南京大学和比利时鲁汶大学</li>
+</ul>
+<h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>广泛使用的大型语言模型仅对权重进行量化，利用INT-权重并保留FP-激活，这样在减少存储需求的同时保持了准确性。然而，这导致了能量和延迟瓶颈向与昂贵的内存访问和计算相关的FP激活转移。现有的LLM加速器主要专注于计算优化，忽视了在LLM推理中占主导地位的FP-INT GeMM操作上联合优化FP计算和数据移动的潜力。</p>
+<h3 id="基本内容"><a href="#基本内容" class="headerlink" title="基本内容"></a>基本内容</h3><p>作者提出了anda数制格式：一种创新的可变长度尾数BFP方案，专为高效的大型语言模型推理而设计。安达的结构包括一个符号位、一个共享指数和一个可变长度尾数，建立在传统BFP转换过程之上。其关键特性是能够根据不同张量的精度敏感性动态选择尾数长度，保持每个张量内的一致性，同时优化准确性与效率的权衡。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/anda_compute_flow_compare.png" alt="计算过程对比"></p>
+<p>配备专用FP-INT处理单元的GPU平台可以消除将INT4权重转换为FP16的需要，从而减少了数据转换开销和计算成本。FIGNA提出了一种使用相应硬件支持的BFP变体的计算方案，以克服专用FPINT单元的问题。激活在内存中以FP16格式存储，在计算前转换为FIGNA格式，然后使用14位尾数与INT4权重相乘进行GeMM计算。最终结果再次转换为FP16并写回内存。然而，由于在计算过程中需要频繁访问FP16激活，从FP16到FIGNA的频繁数据转换引入了额外的开销，影响了整体效率。</p>
+<p>作者提出的Anda格式计算方案与先前的方法相比具有一些独特的<strong>优势</strong>：</p>
+<ol>
+<li>激活不再以FP16格式存储在内存中，直接以Anda数据格式存储，减少了存储开销和数据访问开销，同时避免了频繁的数据转换。</li>
+<li>共享指数使得可以在组内进行INT点积操作，然后跨组进行FP32累加，减少了FP-INT GeMM的计算开销。</li>
+<li>可变长度尾数显著减少了点积操作和内存访问所需的字长最小化。</li>
+<li>仅在将最终的FP32结果写回内存之前将其转换回Anda格式，最小化了存储需求以及切换数据格式带来的额外开销。</li>
+</ol>
+<h3 id="自适应精度搜索算法"><a href="#自适应精度搜索算法" class="headerlink" title="自适应精度搜索算法"></a>自适应精度搜索算法</h3><p>自适应精度搜索算法是作者提出用于在仅权重量化的语言模型中进行激活精度优化的离线编译时算法：</p>
+<ol>
+<li>确定搜索空间：算法将搜索空间缩小到四种关键张量类型（$A_{qkv}, A_o, A_u, A_d$）的精度，这些类型基于它们对模型准确性的敏感性。</li>
+<li>快速评估和优先级排序：使用一种无需训练的一次性校准过程，算法快速评估不同的精度组合，并使用位操作作为指标来估计计算成本，从而优先考虑有希望的组合。</li>
+<li>更新和放宽最佳组合：如果某个组合在保持准确性的同时具有更低的BOPs，它将成为新的最佳组合。算法然后通过减少最佳组合中每个张量类型的尾数长度来生成附近的精度候选，并将未访问过的候选添加到优先队列中。</li>
+<li>迭代和终止：算法重复步骤2和步骤3，直到达到最大迭代次数或搜索空间被耗尽。如果生成的候选组合不满足准确性约束，则不进行更新。</li>
+</ol>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/anda_hardware_arch.png" alt="对应的硬件结构"></p>
+<h3 id="测试结果"><a href="#测试结果" class="headerlink" title="测试结果"></a>测试结果</h3><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/anda_accuracy_result.png" alt="模型准确度结果"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/anda_speed_result.png" alt="加速和功耗结果"></p>
+<hr>
+<h2 id="AMXFP4-Taming-Activation-Outliers-With-Asymmetric-Microscaling-Floating-Point-For-4-Bit-LLM-Inference"><a href="#AMXFP4-Taming-Activation-Outliers-With-Asymmetric-Microscaling-Floating-Point-For-4-Bit-LLM-Inference" class="headerlink" title="AMXFP4: Taming Activation Outliers With Asymmetric Microscaling Floating-Point For 4-Bit LLM Inference"></a>AMXFP4: Taming Activation Outliers With Asymmetric Microscaling Floating-Point For 4-Bit LLM Inference</h2><h3 id="基本信息-1"><a href="#基本信息-1" class="headerlink" title="基本信息"></a>基本信息</h3><ul>
+<li>时间：2024年11月，arxiv</li>
+<li>作者：Janghwan Lee，Jiwoong Park，Jinseok Park，Yongjik Kim，Jungju Oh，Jinwook Oh，Jungwook Choi</li>
+<li>单位：汉阳大学</li>
+</ul>
+<h3 id="背景与挑战"><a href="#背景与挑战" class="headerlink" title="背景与挑战"></a>背景与挑战</h3><p>MXFP4对于LLM推理的稳健性仍然未被充分探索：作者对LLaMA2的评估发现，与MXFP8相比，在MMLU基准测试上的性能显著下降，说明对于稳健的4位推理，需要数据格式创新。</p>
+<h3 id="基本内容-1"><a href="#基本内容-1" class="headerlink" title="基本内容"></a>基本内容</h3><p>作者提出了非对称微缩4比特浮点（AMXFP4）以实现高效的LLM推理，利用非对称共享比例来减轻异常值的影响。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/amfp4_outlier_analysis.png" alt="模型的峰度箱线图"></p>
+<p>随着组大小的减小，llama和opt两种模型类型中的异常值主导地位都减少。在GS &#x3D; 32时，峰度几乎消失，这表明组内的激活动态范围更适合量化。这一观察有助于解释MXFP8在选定LLMs的直接转换中的初步成功，但它并不能解释MXFP4的失望表现。而组均值的箱线图，反映了分布的不对称性。在大组大小的情况下，组均值围绕零中心，但随着组大小的减小，均值显著分散。这种分散表明，MX格式中通常使用的对称数据表示对于微缩激活量化来说不是最优的。</p>
+<h3 id="提出的数据格式"><a href="#提出的数据格式" class="headerlink" title="提出的数据格式"></a>提出的数据格式</h3><p>非对称浮点量化：在浮点量化中，非对称性应用于刻度，这是因为浮点数固有的以零为中心的表示。一个指数位移的尾数表示一个值，然后根据符号乘以正或负的共享刻度。作者定义非对称浮点量化如下：</p>
+<p>$$x_q&#x3D;\left{\begin{array}{l}(-1)^s \cdot 2^{E+e b} \cdot M \cdot\left(2^{s e b_p} \cdot \hat{M}_p\right) \text { if } s&#x3D;0, \ (-1)^s \cdot 2^{E+e b} \cdot M \cdot\left(2^{s e b_n} \cdot \hat{M}_n\right) \text { if } s&#x3D;1,\end{array}\right.$$</p>
+<p>其中$s$、$E$、$eb$和$M$分别代表元素的符号、指数、指数偏移和尾数。$2^{s e b_p} \cdot \hat{M}_p$ 和 $2^{s e b_n} \cdot \hat{M}_n$表示在量化组内共享的正负刻度。</p>
+<p>根据均值和峰度的相似性对组进行聚类，然后进行Lloyd-Max算法以接近理想的量化数字表示（100次迭代；组的数量设置为16，因为更多的组没有观察到MSE的进一步减少）</p>
+<p>共享比例选择：使用5位指数，E5M2有效地缓解了由于动态范围有限而导致的精度损失。</p>
+<h3 id="测试结果-1"><a href="#测试结果-1" class="headerlink" title="测试结果"></a>测试结果</h3><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/amxfp4_calibration_result.png" alt="模型的峰度箱线图"></p>
+<p>如表所示，作者研究了QuaRot和SpinQuant对不同校准集分布的敏感性。测量了在校准和评估数据集相同以及不同的情况下的困惑度PubMed和Enron邮件。QuaRot和SpinQuant性能有显著提升，有一个例外是，当使用PIQA数据用于校准时，SpinQuant在PIQA和WinoGrande上都取得了高性能，尽管仅因校准数据集的变化就出现了2-3%的性能差异，这表明基于校准的方法对数据集非常敏感。<strong>MXFP4-PoT不受校准集的影响，但表现出严重的性能退化，而提出的AMXFP4-FP8显著提升了性能，超过了传统的基于校准的方法。</strong></p>
+<hr>
+<h2 id="MicroScopiQ-Accelerating-Foundational-Models-through-Outlier-Aware-Microscaling-Quantization"><a href="#MicroScopiQ-Accelerating-Foundational-Models-through-Outlier-Aware-Microscaling-Quantization" class="headerlink" title="MicroScopiQ: Accelerating Foundational Models through Outlier-Aware Microscaling Quantization"></a>MicroScopiQ: Accelerating Foundational Models through Outlier-Aware Microscaling Quantization</h2><h3 id="基本信息-2"><a href="#基本信息-2" class="headerlink" title="基本信息"></a>基本信息</h3><ul>
+<li>时间：2024年11月，arxiv</li>
+<li>作者：Akshat Ramachandran、Souvik Kundu、Tushar Krishna</li>
+<li>单位：乔治亚理工学院、Intel</li>
+</ul>
+<h3 id="主要内容"><a href="#主要内容" class="headerlink" title="主要内容"></a>主要内容</h3><p>MicroScopiQ在保留更高精度异常值的同时，剪枝一定比例的重要性最低的权重，以分配额外的异常值位。使用MX-FP对异常值进行更高精度的量化，而使用MX-INT对内值进行量化。与OliVe不同的地方，MicroScopiQ不简单地修剪相邻的值，而是利用Hessian信息来识别最不重要的值进行修剪。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/microscopiq_memory_organization.png" alt="与Olive对比"></p>
+<p>待量化的每一行被划分为多个大小为128的非重叠连续宏块（B）。一个MaB内的所有内值都共享相同的比例因子进行量化。然后，每个MaB再细分为多个大小为𝐵𝜇 &#x3D; 8的非重叠连续微块𝜇Bs，十六个𝜇Bs组成一个MaB。每个𝜇B中的异常值共享相同的比例因子。每个MaB中识别内值和异常值。计算一个共享的8位2的幂次比例因子，根据在识别出𝜇B中的异常值，计算一个共享的8位MXScale，通过连接一级2的幂次比例因子和二级微指数来计算。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/microscopiq_algorithm_process.png" alt="算法过程"></p>
+<p>再对算法做对应的硬件结构：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/microscopiq_arch.png" alt="对应的硬件架构"></p>
+<h3 id="测试结果-2"><a href="#测试结果-2" class="headerlink" title="测试结果"></a>测试结果</h3><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/microscopiq_result.png" alt="加速效果"></p>
+<p>MicroScopiQ v1和v2在所有模型上始终优于所有基线，分别实现了1.50倍和2.47倍的平均加速，能耗和延迟效果与其他相比最好。</p>
+<hr>
+<h2 id="BitMoD-Bit-serial-Mixture-of-Datatype-LLM-Acceleration"><a href="#BitMoD-Bit-serial-Mixture-of-Datatype-LLM-Acceleration" class="headerlink" title="BitMoD: Bit-serial Mixture-of-Datatype LLM Acceleration"></a>BitMoD: Bit-serial Mixture-of-Datatype LLM Acceleration</h2><h3 id="基本信息-3"><a href="#基本信息-3" class="headerlink" title="基本信息"></a>基本信息</h3><ul>
+<li>时间：HPCA，2025</li>
+<li>作者：Yuzong Chen, Ahmed F. AbouElhamayed，Xilai Dai, Yang Wang, Marta Andronics, George A. Constantinules, Mohamed S. Abdelfattah</li>
+<li>开源代码：<a target="_blank" rel="noopener" href="https://github.com/yc2367/BitMoD-HPCA-25">https://github.com/yc2367/BitMoD-HPCA-25</a></li>
+<li>单位：康奈尔大学、微软、帝国理工学院</li>
+</ul>
+<h3 id="背景-1"><a href="#背景-1" class="headerlink" title="背景"></a>背景</h3><p>GPU缺乏专用的硬件来执行整数权重与浮点激活之间的乘法</p>
+<h3 id="内容"><a href="#内容" class="headerlink" title="内容"></a>内容</h3><h4 id="数制格式"><a href="#数制格式" class="headerlink" title="数制格式"></a>数制格式</h4><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/bitmod_special_number.png" alt="特殊值设置"></p>
+<p>作者认为可以通过将fp种一个多余的零值重新定义为另一个特殊值来为FP引入额外的非对称性。这种方法提供了两个关键好处。首先，它允许我们充分利用有限的量化级别。尽管多余的零值不影响高精度格式，如FP16，但它构成了低精度量化级别的一大部分。其次，可以调整特殊值，使扩展的FP数据类型更好地适应逐组权重分布。</p>
+<p>按组量化必须在计算每组点积后对部分和进行去量化，因为不同的组有不同的缩放因子。此外，由于BitMoD保持输入激活为FP16，组部分和也将具有浮点格式。作者在前人工作VS-Quant的基础上进行了改进，VS-Quant应用了第二级量化，将缩放因子进一步量化为低精度整数。给定权重通道大小D和组大小G，VS-Quant对同一通道的D&#x2F;G个缩放因子应用对称量化，其中每组缩放因子的精度是一个设计参数。因此，我们进行了实验以找到每组缩放因子的最佳精度。在BitMoD中使用INT8每组缩放因子，这使得在硬件中可以以位串行方式中高效地进行每组去量化。</p>
+<h4 id="统一表示来处理不同的权重数据类型"><a href="#统一表示来处理不同的权重数据类型" class="headerlink" title="统一表示来处理不同的权重数据类型"></a>统一表示来处理不同的权重数据类型</h4><p>硬件方面的设计目标是支持各种数制INT8、INT6以及在统一架构中的新的FP4和FP3扩展。作者出了一种统一的位串行表示，其中每个数字都被分解为一系列位串行项，每个项包含四个部分：符号、指数、尾数和位重要性。位串行项的值可以表示为：</p>
+<p>$$v_{\text {term }}&#x3D;(-1)^{\text {sign }} \cdot 2^{\text {exp }} \cdot \operatorname{man} \cdot 2^{\text {bsig }}$$</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/bitmod_hardware_arch.png" alt="硬件结构"></p>
+<hr>
+<h2 id="Ascend-HiFloat8-Format-for-Deep-Learning"><a href="#Ascend-HiFloat8-Format-for-Deep-Learning" class="headerlink" title="Ascend HiFloat8 Format for Deep Learning"></a>Ascend HiFloat8 Format for Deep Learning</h2><h3 id="基本信息-4"><a href="#基本信息-4" class="headerlink" title="基本信息"></a>基本信息</h3><ul>
+<li>时间：arxiv，24年9月</li>
+<li>作者：人有点多，Yuanyong Luo是通讯</li>
+<li>单位：华为</li>
+</ul>
+<h3 id="内容-1"><a href="#内容-1" class="headerlink" title="内容"></a>内容</h3><p>论文提出了一个数据格式HiFloat8，就是基于fp9然后可变的尾数、指数长度，相比fp8加了一个dot位，这个位长度从2到4位。</p>
+<ul>
+<li>dot位为2位时，11、10、01表示指数位的长度是4、3、2，对应的尾数位的长度是1、2、3</li>
+<li>dot位为3位时，001表示指数位的长度是1，对应的尾数位的长度是4</li>
+<li>dot位为4位时，0001表示指数位的长度是0，对应的尾数位的长度是5，0000代表的是非规约数</li>
+</ul>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/hifloat8_field_settings.png" alt="HiF8的数据格式"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/hifloat8_dot_field.png" alt="不同的dot所指的情况"></p>
+<p>这是规约数的计算公式：<br>$$X &#x3D; (-1)^S \times 2^E \times 1.M$$</p>
+<p>这是非规约数的计算公式：<br>$$X &#x3D; (-1)^S \times 2^{M-23} \times 1.0$$</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/hifloat8_value_compare.png" alt="精度结果"></p>
+<p>HiF8、FP8和FP16格式的典型编码值和特性。对于二进制模式下的HiF8格式，黑色位是符号域，红色位是点域，绿色位是指数域，蓝色位是尾数域。HiF8支持所有特殊值，但不区分正零和负零。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/hifloat8_precision_graph.png" alt="非规范化到规范化操作后尾数位在指数上的分布情况"></p>
+<h3 id="实验结果"><a href="#实验结果" class="headerlink" title="实验结果"></a>实验结果</h3><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/hifloat8_inference_result.png" alt="HiF8在大语言模型上的推理性能"></p>
+<p>通过HiF8训练的LLM可以直接用于推理，论文还进一步评估了SmoothQuant校准方法用于LLMs。首先，对量化相对不敏感的LLaMA和对量化敏感的OPT作为实验用的LLMs。对于一些对量化不敏感的大语言模型，如LLaMA，即使只进行最简单的直接转换，HiF8也能达到期望的推理精度。但对于一些对量化敏感的大语言模型，如OPT，则需要专门的校准方法，如PTS（逐张量缩放）和SmoothQuant，来提高HiF8的推理精度。</p>
+<hr>
+<h2 id="QLoRA-Efficient-Finetuning-of-Quantized-LLMs"><a href="#QLoRA-Efficient-Finetuning-of-Quantized-LLMs" class="headerlink" title="QLoRA: Efficient Finetuning of Quantized LLMs"></a>QLoRA: Efficient Finetuning of Quantized LLMs</h2><h3 id="基本信息-5"><a href="#基本信息-5" class="headerlink" title="基本信息"></a>基本信息</h3><ul>
+<li>时间：NIPS’23</li>
+<li>作者：Tim Dettmers、Artidoro Pagnoni、Ari Holtzman、Luke Zettlemoyer</li>
+<li>单位：华盛顿大学</li>
+</ul>
+<h3 id="内容-2"><a href="#内容-2" class="headerlink" title="内容"></a>内容</h3><h4 id="NF4的数据格式"><a href="#NF4的数据格式" class="headerlink" title="NF4的数据格式"></a>NF4的数据格式</h4><p>神经网络权值通常具有标准差为0的正态分布性质，分位数量化技术的主要思想是将数值尽量落到均值为0，标准差为[-1,1]的正态分布的固定期望值上：</p>
+<ol>
+<li>首先先将数据归一化，除以数据里的最大值。</li>
+<li>把正态分布曲线分为16个部分（概率相等），每个部分用左右值之和的二分之一来代表这一部分，然后给数据里找接近的作为索引</li>
+</ol>
+<p>比如[1.672，0.987，-1.1]<br>先归一化为[1.0, 0.590, -0.658]，这个对应的scale&#x3D;1.672<br>再根据划分的部分查表得到index，[15，13，1]</p>
+<h4 id="双重量化"><a href="#双重量化" class="headerlink" title="双重量化"></a>双重量化</h4><p>对量化常数进行二次量化，以进一步减少内存占用</p>
+<h4 id="分页优化器"><a href="#分页优化器" class="headerlink" title="分页优化器"></a>分页优化器</h4><p>使用NVIDIA的统一内存特性，当GPU内存不足时，自动将部分数据转移到CPU内存中，以管理内存峰值。</p>
+<h3 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h3><p>实验的结果一致表明，4位QLoRA使用NF4数据类型在具有良好评估设置的学术基准上，能够匹配16位全模型微调和16位LoRA微调的性能。实验还展示了NF4比FP4更有效，双重量化不会降低性能。</p>
+<p>并且，QLORA将65B参数模型的微调平均内存需求从超过780GB的GPU内存降低到小于48GB，同时在与16位全微调基线相比的情况下，运行时间或预测性能没有下降。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/qlora_accuracy_result.png" alt="精度结果"></p>
+<hr>
+<h2 id="Learning-from-Students-Applying-t-Distributions-to-Explore-Accurate-and-Efficient-Formats-for-LLMs"><a href="#Learning-from-Students-Applying-t-Distributions-to-Explore-Accurate-and-Efficient-Formats-for-LLMs" class="headerlink" title="Learning from Students: Applying t-Distributions to Explore Accurate and Efficient Formats for LLMs"></a>Learning from Students: Applying t-Distributions to Explore Accurate and Efficient Formats for LLMs</h2><h3 id="基本信息-6"><a href="#基本信息-6" class="headerlink" title="基本信息"></a>基本信息</h3><ul>
+<li>时间：arxiv，24年5月发的，被ICML2024接收</li>
+<li>作者：Jordan Dotzel（通讯）、Yuzong Chen、Bahaa Kotb、Sushma Prasad、Gang Wu、Sheng Li、Mengwei Ding、Zhiru Zhang</li>
+<li>单位：康奈尔大学、谷歌</li>
+</ul>
+<h3 id="内容-3"><a href="#内容-3" class="headerlink" title="内容"></a>内容</h3><p>把上面那个正态分布换成t分布</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/t_distribution_weight_profile.png" alt="在mistral-7b的权重实施"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/t_distribution_model_weight_profile.png" alt="几种模型的权重和激活"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://lazyreborn.site">Reborn</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://lazyreborn.site/2025/05/13/%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F%E5%99%A8%E4%B8%AD%E7%9A%84%E8%BF%9B%E9%98%B6%E6%95%B0%E5%88%B6%E6%A0%BC%E5%BC%8F/">https://lazyreborn.site/2025/05/13/%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F%E5%99%A8%E4%B8%AD%E7%9A%84%E8%BF%9B%E9%98%B6%E6%95%B0%E5%88%B6%E6%A0%BC%E5%BC%8F/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://lazyreborn.site" target="_blank">Reborn</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">论文笔记</a><a class="post-meta__tags" href="/tags/%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B/">大语言模型</a><a class="post-meta__tags" href="/tags/FP-INT%E6%B7%B7%E5%90%88%E8%AE%A1%E7%AE%97/">FP-INT混合计算</a><a class="post-meta__tags" href="/tags/%E6%95%B0%E5%88%B6%E6%A0%BC%E5%BC%8F/">数制格式</a></div><div class="post_share"><div class="social-share" data-image="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260417152326_145_15.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://npm.elemecdn.com/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://npm.elemecdn.com/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2026/01/23/%E6%B7%B7%E5%90%88%E7%B2%BE%E5%BA%A6%E7%9A%84%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF%E8%AE%BE%E8%AE%A1/"><img class="prev-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/guaiqiwuyu.webp" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">混合精度的数字电路设计</div></div></a></div><div class="next-post pull-right"><a href="/2025/04/17/%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F%E5%99%A8%E4%B8%AD%E7%9A%84%E6%95%B0%E5%88%B6%E6%A0%BC%E5%BC%8F%E4%B8%8E%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84/"><img class="next-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260417152414_146_15.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">大语言模型推理加速器中的数制格式与基础架构</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2025/04/17/%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F%E5%99%A8%E4%B8%AD%E7%9A%84%E6%95%B0%E5%88%B6%E6%A0%BC%E5%BC%8F%E4%B8%8E%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84/" title="大语言模型推理加速器中的数制格式与基础架构"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260417152414_146_15.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-04-17</div><div class="title">大语言模型推理加速器中的数制格式与基础架构</div></div></a></div><div><a href="/2024/10/02/Transformer%E9%9D%9E%E7%BA%BF%E6%80%A7%E5%8D%95%E5%85%83%E7%9A%84%E7%A1%AC%E4%BB%B6%E4%BC%98%E5%8C%96%E6%96%B9%E6%A1%88%EF%BC%882024.10.02%EF%BC%89/" title="Transformer非线性单元的硬件优化方案"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260417152216_144_15.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-02</div><div class="title">Transformer非线性单元的硬件优化方案</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://s2.loli.net/2024/10/02/tKw8pe7z9TLGkAR.webp" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Reborn</div><div class="author-info__description">有在好好学习...吧？</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">5</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">9</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Rebornals"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/Rebornals" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="/blog@lazyreborn.site" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">好好好</div></div><div class="card-widget" id="card-poem"><div id="poem_sentence"></div><div id="poem_info"><div id="poem_dynasty"></div><div id="poem_author"></div></div></div><script src="https://cdn.jsdelivr.net/npm/js-heo@1.0.11/poem/jinrishici.js" charset="utf-8"></script><script type="text/javascript">jinrishici.load(function(result) {
+var sentence = document.querySelector("#poem_sentence")
+var author = document.querySelector("#poem_author")
+var dynasty = document.querySelector("#poem_dynasty")
+
+var sentenceText = result.data.content
+sentenceText = sentenceText.substr(0, sentenceText.length - 1);
+sentence.innerHTML = sentenceText
+dynasty.innerHTML = result.data.origin.dynasty
+author.innerHTML = result.data.origin.author + '《' + result.data.origin.title + '》'
+});</script><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Anda-Unlocking-Efficient-LLM-Inference-with-a-Variable-Length-Grouped-Activation-Data-Format"><span class="toc-number">1.</span> <span class="toc-text">Anda: Unlocking Efficient LLM Inference with a Variable-Length Grouped Activation Data Format</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E4%BF%A1%E6%81%AF"><span class="toc-number">1.1.</span> <span class="toc-text">基本信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%83%8C%E6%99%AF"><span class="toc-number">1.2.</span> <span class="toc-text">背景</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E5%86%85%E5%AE%B9"><span class="toc-number">1.3.</span> <span class="toc-text">基本内容</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%87%AA%E9%80%82%E5%BA%94%E7%B2%BE%E5%BA%A6%E6%90%9C%E7%B4%A2%E7%AE%97%E6%B3%95"><span class="toc-number">1.4.</span> <span class="toc-text">自适应精度搜索算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E7%BB%93%E6%9E%9C"><span class="toc-number">1.5.</span> <span class="toc-text">测试结果</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#AMXFP4-Taming-Activation-Outliers-With-Asymmetric-Microscaling-Floating-Point-For-4-Bit-LLM-Inference"><span class="toc-number">2.</span> <span class="toc-text">AMXFP4: Taming Activation Outliers With Asymmetric Microscaling Floating-Point For 4-Bit LLM Inference</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E4%BF%A1%E6%81%AF-1"><span class="toc-number">2.1.</span> <span class="toc-text">基本信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%83%8C%E6%99%AF%E4%B8%8E%E6%8C%91%E6%88%98"><span class="toc-number">2.2.</span> <span class="toc-text">背景与挑战</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E5%86%85%E5%AE%B9-1"><span class="toc-number">2.3.</span> <span class="toc-text">基本内容</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8F%90%E5%87%BA%E7%9A%84%E6%95%B0%E6%8D%AE%E6%A0%BC%E5%BC%8F"><span class="toc-number">2.4.</span> <span class="toc-text">提出的数据格式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E7%BB%93%E6%9E%9C-1"><span class="toc-number">2.5.</span> <span class="toc-text">测试结果</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MicroScopiQ-Accelerating-Foundational-Models-through-Outlier-Aware-Microscaling-Quantization"><span class="toc-number">3.</span> <span class="toc-text">MicroScopiQ: Accelerating Foundational Models through Outlier-Aware Microscaling Quantization</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E4%BF%A1%E6%81%AF-2"><span class="toc-number">3.1.</span> <span class="toc-text">基本信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BB%E8%A6%81%E5%86%85%E5%AE%B9"><span class="toc-number">3.2.</span> <span class="toc-text">主要内容</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E7%BB%93%E6%9E%9C-2"><span class="toc-number">3.3.</span> <span class="toc-text">测试结果</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#BitMoD-Bit-serial-Mixture-of-Datatype-LLM-Acceleration"><span class="toc-number">4.</span> <span class="toc-text">BitMoD: Bit-serial Mixture-of-Datatype LLM Acceleration</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E4%BF%A1%E6%81%AF-3"><span class="toc-number">4.1.</span> <span class="toc-text">基本信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%83%8C%E6%99%AF-1"><span class="toc-number">4.2.</span> <span class="toc-text">背景</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%85%E5%AE%B9"><span class="toc-number">4.3.</span> <span class="toc-text">内容</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%B0%E5%88%B6%E6%A0%BC%E5%BC%8F"><span class="toc-number">4.3.1.</span> <span class="toc-text">数制格式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BB%9F%E4%B8%80%E8%A1%A8%E7%A4%BA%E6%9D%A5%E5%A4%84%E7%90%86%E4%B8%8D%E5%90%8C%E7%9A%84%E6%9D%83%E9%87%8D%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="toc-number">4.3.2.</span> <span class="toc-text">统一表示来处理不同的权重数据类型</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Ascend-HiFloat8-Format-for-Deep-Learning"><span class="toc-number">5.</span> <span class="toc-text">Ascend HiFloat8 Format for Deep Learning</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E4%BF%A1%E6%81%AF-4"><span class="toc-number">5.1.</span> <span class="toc-text">基本信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%85%E5%AE%B9-1"><span class="toc-number">5.2.</span> <span class="toc-text">内容</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C%E7%BB%93%E6%9E%9C"><span class="toc-number">5.3.</span> <span class="toc-text">实验结果</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#QLoRA-Efficient-Finetuning-of-Quantized-LLMs"><span class="toc-number">6.</span> <span class="toc-text">QLoRA: Efficient Finetuning of Quantized LLMs</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E4%BF%A1%E6%81%AF-5"><span class="toc-number">6.1.</span> <span class="toc-text">基本信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%85%E5%AE%B9-2"><span class="toc-number">6.2.</span> <span class="toc-text">内容</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#NF4%E7%9A%84%E6%95%B0%E6%8D%AE%E6%A0%BC%E5%BC%8F"><span class="toc-number">6.2.1.</span> <span class="toc-text">NF4的数据格式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%8C%E9%87%8D%E9%87%8F%E5%8C%96"><span class="toc-number">6.2.2.</span> <span class="toc-text">双重量化</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%86%E9%A1%B5%E4%BC%98%E5%8C%96%E5%99%A8"><span class="toc-number">6.2.3.</span> <span class="toc-text">分页优化器</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%93%E6%9E%9C"><span class="toc-number">6.3.</span> <span class="toc-text">结果</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Learning-from-Students-Applying-t-Distributions-to-Explore-Accurate-and-Efficient-Formats-for-LLMs"><span class="toc-number">7.</span> <span class="toc-text">Learning from Students: Applying t-Distributions to Explore Accurate and Efficient Formats for LLMs</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E4%BF%A1%E6%81%AF-6"><span class="toc-number">7.1.</span> <span class="toc-text">基本信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%85%E5%AE%B9-3"><span class="toc-number">7.2.</span> <span class="toc-text">内容</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/01/23/%E6%B7%B7%E5%90%88%E7%B2%BE%E5%BA%A6%E7%9A%84%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF%E8%AE%BE%E8%AE%A1/" title="混合精度的数字电路设计"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/guaiqiwuyu.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="混合精度的数字电路设计"/></a><div class="content"><a class="title" href="/2026/01/23/%E6%B7%B7%E5%90%88%E7%B2%BE%E5%BA%A6%E7%9A%84%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF%E8%AE%BE%E8%AE%A1/" title="混合精度的数字电路设计">混合精度的数字电路设计</a><time datetime="2026-01-23T13:58:16.000Z" title="发表于 2026-01-23 21:58:16">2026-01-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/05/13/%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F%E5%99%A8%E4%B8%AD%E7%9A%84%E8%BF%9B%E9%98%B6%E6%95%B0%E5%88%B6%E6%A0%BC%E5%BC%8F/" title="大语言模型推理加速器中的进阶数制格式"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260417152326_145_15.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="大语言模型推理加速器中的进阶数制格式"/></a><div class="content"><a class="title" href="/2025/05/13/%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F%E5%99%A8%E4%B8%AD%E7%9A%84%E8%BF%9B%E9%98%B6%E6%95%B0%E5%88%B6%E6%A0%BC%E5%BC%8F/" title="大语言模型推理加速器中的进阶数制格式">大语言模型推理加速器中的进阶数制格式</a><time datetime="2025-05-13T14:30:00.000Z" title="发表于 2025-05-13 22:30:00">2025-05-13</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/04/17/%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F%E5%99%A8%E4%B8%AD%E7%9A%84%E6%95%B0%E5%88%B6%E6%A0%BC%E5%BC%8F%E4%B8%8E%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84/" title="大语言模型推理加速器中的数制格式与基础架构"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260417152414_146_15.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="大语言模型推理加速器中的数制格式与基础架构"/></a><div class="content"><a class="title" href="/2025/04/17/%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F%E5%99%A8%E4%B8%AD%E7%9A%84%E6%95%B0%E5%88%B6%E6%A0%BC%E5%BC%8F%E4%B8%8E%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84/" title="大语言模型推理加速器中的数制格式与基础架构">大语言模型推理加速器中的数制格式与基础架构</a><time datetime="2025-04-17T14:30:00.000Z" title="发表于 2025-04-17 22:30:00">2025-04-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/10/02/Transformer%E9%9D%9E%E7%BA%BF%E6%80%A7%E5%8D%95%E5%85%83%E7%9A%84%E7%A1%AC%E4%BB%B6%E4%BC%98%E5%8C%96%E6%96%B9%E6%A1%88%EF%BC%882024.10.02%EF%BC%89/" title="Transformer非线性单元的硬件优化方案"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20260417152216_144_15.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Transformer非线性单元的硬件优化方案"/></a><div class="content"><a class="title" href="/2024/10/02/Transformer%E9%9D%9E%E7%BA%BF%E6%80%A7%E5%8D%95%E5%85%83%E7%9A%84%E7%A1%AC%E4%BB%B6%E4%BC%98%E5%8C%96%E6%96%B9%E6%A1%88%EF%BC%882024.10.02%EF%BC%89/" title="Transformer非线性单元的硬件优化方案">Transformer非线性单元的硬件优化方案</a><time datetime="2024-10-02T14:30:00.000Z" title="发表于 2024-10-02 22:30:00">2024-10-02</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/02/01/hello-world/" title="躺在云上"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://s2.loli.net/2024/10/02/R2IBHVe7S8dLctO.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="躺在云上"/></a><div class="content"><a class="title" href="/2022/02/01/hello-world/" title="躺在云上">躺在云上</a><time datetime="2022-01-31T16:00:00.000Z" title="发表于 2022-02-01 00:00:00">2022-02-01</time></div></div></div></div></div></div></main><footer id="footer" style="background: transparent"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2026 By Reborn</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://npm.elemecdn.com/@fancyapps/ui/dist/fancybox.umd.js"></script><script src="https://npm.elemecdn.com/vanilla-lazyload/dist/lazyload.iife.min.js"></script><script src="https://npm.elemecdn.com/node-snackbar/dist/snackbar.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"></div><div class="aplayer no-destroy" data-id="8715741196" data-server="tencent" data-type="playlist"   data-order="list" data-fixed="true" data-preload="auto" data-autoplay="false" data-mutex="true" ></div><canvas class="fireworks" mobile="false"></canvas><script src="https://npm.elemecdn.com/butterfly-extsrc/dist/fireworks.min.js"></script><link rel="stylesheet" href="https://npm.elemecdn.com/aplayer/dist/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://npm.elemecdn.com/aplayer/dist/APlayer.min.js"></script><script src="https://npm.elemecdn.com/butterfly-extsrc/metingjs/dist/Meting.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><!-- hexo injector body_end start --><script data-pjax>
+  function butterfly_swiper_injector_config(){
+    var parent_div_git = document.getElementById('recent-posts');
+    var item_html = '<div class="recent-post-item" style="height: auto;width: 100%"><div class="blog-slider swiper-container-fade swiper-container-horizontal" id="swiper_container"><div class="blog-slider__wrp swiper-wrapper" style="transition-duration: 0ms;"><div class="blog-slider__item swiper-slide" style="width: 750px; opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><a class="blog-slider__img" href="2026/01/23/混合精度的数字电路设计/" alt=""><img width="48" height="48" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://obsidian-1309477295.cos.ap-guangzhou.myqcloud.com/obsidian/guaiqiwuyu.webp" alt="" onerror="this.src=https://unpkg.zhimg.com/akilar-candyassets/image/loading.gif; this.onerror = null;"/></a><div class="blog-slider__content"><span class="blog-slider__code">2026-01-23</span><a class="blog-slider__title" href="2026/01/23/混合精度的数字电路设计/" alt="">混合精度的数字电路设计</a><div class="blog-slider__text">最近在看的</div><a class="blog-slider__button" href="2026/01/23/混合精度的数字电路设计/" alt="">详情   </a></div></div><div class="blog-slider__item swiper-slide" style="width: 750px; opacity: 1; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;"><a class="blog-slider__img" href="2022/02/01/hello-world/" alt=""><img width="48" height="48" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://s2.loli.net/2024/10/02/R2IBHVe7S8dLctO.webp" alt="" onerror="this.src=https://unpkg.zhimg.com/akilar-candyassets/image/loading.gif; this.onerror = null;"/></a><div class="blog-slider__content"><span class="blog-slider__code">2022-02-01</span><a class="blog-slider__title" href="2022/02/01/hello-world/" alt="">躺在云上</a><div class="blog-slider__text">影子铺满了大地</div><a class="blog-slider__button" href="2022/02/01/hello-world/" alt="">详情   </a></div></div></div><div class="blog-slider__pagination swiper-pagination-clickable swiper-pagination-bullets"></div></div></div>';
+    console.log('已挂载butterfly_swiper')
+    parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+    }
+  var elist = 'undefined'.split(',');
+  var cpage = location.pathname;
+  var epage = 'all';
+  var flag = 0;
+
+  for (var i=0;i<elist.length;i++){
+    if (cpage.includes(elist[i])){
+      flag++;
+    }
+  }
+
+  if ((epage ==='all')&&(flag == 0)){
+    butterfly_swiper_injector_config();
+  }
+  else if (epage === cpage){
+    butterfly_swiper_injector_config();
+  }
+  </script><script defer src="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper.min.js"></script><script defer data-pjax src="https://npm.elemecdn.com/hexo-butterfly-swiper/lib/swiper_init.js"></script><!-- hexo injector body_end end --><script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/"});</script></body></html>
