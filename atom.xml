@@ -3,11 +3,11 @@
   <title>Reborn</title>
   
   <subtitle>花径不曾缘客扫。蓬门今始为君开。</subtitle>
-  <link href="https://lazyreborn.site/atom.xml" rel="self"/>
+  <link href="https://lazyreborn.link/atom.xml" rel="self"/>
   
-  <link href="https://lazyreborn.site/"/>
+  <link href="https://lazyreborn.link/"/>
   <updated>2026-01-23T14:07:54.175Z</updated>
-  <id>https://lazyreborn.site/</id>
+  <id>https://lazyreborn.link/</id>
   
   <author>
     <name>Reborn</name>
@@ -18,8 +18,8 @@
   
   <entry>
     <title>混合精度的数字电路设计</title>
-    <link href="https://lazyreborn.site/2026/01/23/%E6%B7%B7%E5%90%88%E7%B2%BE%E5%BA%A6%E7%9A%84%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF%E8%AE%BE%E8%AE%A1/"/>
-    <id>https://lazyreborn.site/2026/01/23/%E6%B7%B7%E5%90%88%E7%B2%BE%E5%BA%A6%E7%9A%84%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF%E8%AE%BE%E8%AE%A1/</id>
+    <link href="https://lazyreborn.link/2026/01/23/%E6%B7%B7%E5%90%88%E7%B2%BE%E5%BA%A6%E7%9A%84%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF%E8%AE%BE%E8%AE%A1/"/>
+    <id>https://lazyreborn.link/2026/01/23/%E6%B7%B7%E5%90%88%E7%B2%BE%E5%BA%A6%E7%9A%84%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF%E8%AE%BE%E8%AE%A1/</id>
     <published>2026-01-23T13:58:16.000Z</published>
     <updated>2026-01-23T14:07:54.175Z</updated>
     
@@ -30,17 +30,17 @@
     
     
     
-    <category term="数字电路" scheme="https://lazyreborn.site/categories/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/"/>
+    <category term="数字电路" scheme="https://lazyreborn.link/categories/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/"/>
     
     
-    <category term="数字电路" scheme="https://lazyreborn.site/tags/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/"/>
+    <category term="数字电路" scheme="https://lazyreborn.link/tags/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/"/>
     
   </entry>
   
   <entry>
     <title>大语言模型推理加速器中的进阶数制格式</title>
-    <link href="https://lazyreborn.site/2025/05/13/%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F%E5%99%A8%E4%B8%AD%E7%9A%84%E8%BF%9B%E9%98%B6%E6%95%B0%E5%88%B6%E6%A0%BC%E5%BC%8F/"/>
-    <id>https://lazyreborn.site/2025/05/13/%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F%E5%99%A8%E4%B8%AD%E7%9A%84%E8%BF%9B%E9%98%B6%E6%95%B0%E5%88%B6%E6%A0%BC%E5%BC%8F/</id>
+    <link href="https://lazyreborn.link/2025/05/13/%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F%E5%99%A8%E4%B8%AD%E7%9A%84%E8%BF%9B%E9%98%B6%E6%95%B0%E5%88%B6%E6%A0%BC%E5%BC%8F/"/>
+    <id>https://lazyreborn.link/2025/05/13/%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F%E5%99%A8%E4%B8%AD%E7%9A%84%E8%BF%9B%E9%98%B6%E6%95%B0%E5%88%B6%E6%A0%BC%E5%BC%8F/</id>
     <published>2025-05-13T14:30:00.000Z</published>
     <updated>2026-04-17T07:33:00.753Z</updated>
     
@@ -51,23 +51,23 @@
     
     
     
-    <category term="论文笔记" scheme="https://lazyreborn.site/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/"/>
+    <category term="论文笔记" scheme="https://lazyreborn.link/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/"/>
     
     
-    <category term="论文笔记" scheme="https://lazyreborn.site/tags/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/"/>
+    <category term="论文笔记" scheme="https://lazyreborn.link/tags/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/"/>
     
-    <category term="大语言模型" scheme="https://lazyreborn.site/tags/%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B/"/>
+    <category term="大语言模型" scheme="https://lazyreborn.link/tags/%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B/"/>
     
-    <category term="FP-INT混合计算" scheme="https://lazyreborn.site/tags/FP-INT%E6%B7%B7%E5%90%88%E8%AE%A1%E7%AE%97/"/>
+    <category term="FP-INT混合计算" scheme="https://lazyreborn.link/tags/FP-INT%E6%B7%B7%E5%90%88%E8%AE%A1%E7%AE%97/"/>
     
-    <category term="数制格式" scheme="https://lazyreborn.site/tags/%E6%95%B0%E5%88%B6%E6%A0%BC%E5%BC%8F/"/>
+    <category term="数制格式" scheme="https://lazyreborn.link/tags/%E6%95%B0%E5%88%B6%E6%A0%BC%E5%BC%8F/"/>
     
   </entry>
   
   <entry>
     <title>大语言模型推理加速器中的数制格式与基础架构</title>
-    <link href="https://lazyreborn.site/2025/04/17/%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F%E5%99%A8%E4%B8%AD%E7%9A%84%E6%95%B0%E5%88%B6%E6%A0%BC%E5%BC%8F%E4%B8%8E%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84/"/>
-    <id>https://lazyreborn.site/2025/04/17/%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F%E5%99%A8%E4%B8%AD%E7%9A%84%E6%95%B0%E5%88%B6%E6%A0%BC%E5%BC%8F%E4%B8%8E%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84/</id>
+    <link href="https://lazyreborn.link/2025/04/17/%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F%E5%99%A8%E4%B8%AD%E7%9A%84%E6%95%B0%E5%88%B6%E6%A0%BC%E5%BC%8F%E4%B8%8E%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84/"/>
+    <id>https://lazyreborn.link/2025/04/17/%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F%E5%99%A8%E4%B8%AD%E7%9A%84%E6%95%B0%E5%88%B6%E6%A0%BC%E5%BC%8F%E4%B8%8E%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84/</id>
     <published>2025-04-17T14:30:00.000Z</published>
     <updated>2026-04-17T07:32:59.726Z</updated>
     
@@ -78,23 +78,23 @@
     
     
     
-    <category term="论文笔记" scheme="https://lazyreborn.site/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/"/>
+    <category term="论文笔记" scheme="https://lazyreborn.link/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/"/>
     
     
-    <category term="论文笔记" scheme="https://lazyreborn.site/tags/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/"/>
+    <category term="论文笔记" scheme="https://lazyreborn.link/tags/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/"/>
     
-    <category term="大语言模型" scheme="https://lazyreborn.site/tags/%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B/"/>
+    <category term="大语言模型" scheme="https://lazyreborn.link/tags/%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B/"/>
     
-    <category term="FP-INT混合计算" scheme="https://lazyreborn.site/tags/FP-INT%E6%B7%B7%E5%90%88%E8%AE%A1%E7%AE%97/"/>
+    <category term="FP-INT混合计算" scheme="https://lazyreborn.link/tags/FP-INT%E6%B7%B7%E5%90%88%E8%AE%A1%E7%AE%97/"/>
     
-    <category term="数制格式" scheme="https://lazyreborn.site/tags/%E6%95%B0%E5%88%B6%E6%A0%BC%E5%BC%8F/"/>
+    <category term="数制格式" scheme="https://lazyreborn.link/tags/%E6%95%B0%E5%88%B6%E6%A0%BC%E5%BC%8F/"/>
     
   </entry>
   
   <entry>
     <title>Transformer非线性单元的硬件优化方案</title>
-    <link href="https://lazyreborn.site/2024/10/02/Transformer%E9%9D%9E%E7%BA%BF%E6%80%A7%E5%8D%95%E5%85%83%E7%9A%84%E7%A1%AC%E4%BB%B6%E4%BC%98%E5%8C%96%E6%96%B9%E6%A1%88%EF%BC%882024.10.02%EF%BC%89/"/>
-    <id>https://lazyreborn.site/2024/10/02/Transformer%E9%9D%9E%E7%BA%BF%E6%80%A7%E5%8D%95%E5%85%83%E7%9A%84%E7%A1%AC%E4%BB%B6%E4%BC%98%E5%8C%96%E6%96%B9%E6%A1%88%EF%BC%882024.10.02%EF%BC%89/</id>
+    <link href="https://lazyreborn.link/2024/10/02/Transformer%E9%9D%9E%E7%BA%BF%E6%80%A7%E5%8D%95%E5%85%83%E7%9A%84%E7%A1%AC%E4%BB%B6%E4%BC%98%E5%8C%96%E6%96%B9%E6%A1%88%EF%BC%882024.10.02%EF%BC%89/"/>
+    <id>https://lazyreborn.link/2024/10/02/Transformer%E9%9D%9E%E7%BA%BF%E6%80%A7%E5%8D%95%E5%85%83%E7%9A%84%E7%A1%AC%E4%BB%B6%E4%BC%98%E5%8C%96%E6%96%B9%E6%A1%88%EF%BC%882024.10.02%EF%BC%89/</id>
     <published>2024-10-02T14:30:00.000Z</published>
     <updated>2026-04-17T07:32:26.279Z</updated>
     
@@ -105,23 +105,23 @@
     
     
     
-    <category term="论文笔记" scheme="https://lazyreborn.site/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/"/>
+    <category term="论文笔记" scheme="https://lazyreborn.link/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/"/>
     
     
-    <category term="Transformer" scheme="https://lazyreborn.site/tags/Transformer/"/>
+    <category term="Transformer" scheme="https://lazyreborn.link/tags/Transformer/"/>
     
-    <category term="非线性单元" scheme="https://lazyreborn.site/tags/%E9%9D%9E%E7%BA%BF%E6%80%A7%E5%8D%95%E5%85%83/"/>
+    <category term="非线性单元" scheme="https://lazyreborn.link/tags/%E9%9D%9E%E7%BA%BF%E6%80%A7%E5%8D%95%E5%85%83/"/>
     
-    <category term="硬件加速" scheme="https://lazyreborn.site/tags/%E7%A1%AC%E4%BB%B6%E5%8A%A0%E9%80%9F/"/>
+    <category term="硬件加速" scheme="https://lazyreborn.link/tags/%E7%A1%AC%E4%BB%B6%E5%8A%A0%E9%80%9F/"/>
     
-    <category term="论文笔记" scheme="https://lazyreborn.site/tags/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/"/>
+    <category term="论文笔记" scheme="https://lazyreborn.link/tags/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/"/>
     
   </entry>
   
   <entry>
     <title>躺在云上</title>
-    <link href="https://lazyreborn.site/2022/02/01/hello-world/"/>
-    <id>https://lazyreborn.site/2022/02/01/hello-world/</id>
+    <link href="https://lazyreborn.link/2022/02/01/hello-world/"/>
+    <id>https://lazyreborn.link/2022/02/01/hello-world/</id>
     <published>2022-01-31T16:00:00.000Z</published>
     <updated>2024-10-02T06:12:20.077Z</updated>
     
@@ -132,10 +132,10 @@
     
     
     
-    <category term="建站" scheme="https://lazyreborn.site/categories/%E5%BB%BA%E7%AB%99/"/>
+    <category term="建站" scheme="https://lazyreborn.link/categories/%E5%BB%BA%E7%AB%99/"/>
     
     
-    <category term="建站" scheme="https://lazyreborn.site/tags/%E5%BB%BA%E7%AB%99/"/>
+    <category term="建站" scheme="https://lazyreborn.link/tags/%E5%BB%BA%E7%AB%99/"/>
     
   </entry>
   
